@@ -41,7 +41,7 @@ public class kServer{
 
 		this.chatListener=new ChatListener(getInstance(), getPermissionManager());
 		this.chatListener.setUserData(getInstance().getUserData());
-		new BungeeCordFirewallListener(getInstance().getMysql(), getInstance().getServerType().getName());
+		new BungeeCordFirewallListener(getInstance().getMysql(),commandHandler, getInstance().getServerType().getName());
 		UtilServer.createLagListener(getCommandHandler());
 		UtilInv.getBase(getInstance());
 		UtilServer.createGemsShop(new GemsShop(getHologram(),getCommandHandler(), UtilInv.getBase(),getPermissionManager(), getInstance().getServerType()));
