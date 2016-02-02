@@ -1,4 +1,4 @@
-package me.kingingo.kSystem.kManager.kSkyBlock;
+package me.kingingo.kSystem.kServer.kSkyBlock;
 
 import me.kingingo.kSystem.kSystem;
 import me.kingingo.kSystem.kServer.kServer;

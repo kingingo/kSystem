@@ -1,4 +1,4 @@
-package me.kingingo.kSystem.kManager.kPvP;
+package me.kingingo.kSystem.kServer.kPvP;
 
 import lombok.Getter;
 import me.kingingo.kSystem.kSystem;
@@ -28,6 +28,7 @@ import me.kingingo.kcore.Neuling.NeulingManager;
 import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.Pet.Shop.PlayerPetHandler;
 import me.kingingo.kcore.SignShop.SignShop;
+import me.kingingo.kcore.UserDataConfig.UserDataConfig;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.friend.FriendManager;
 
@@ -49,9 +50,13 @@ public class kPvP extends kServer{
 	private PetManager petManager;
 	@Getter
 	private PlayerPetHandler petHandler;
+	@Getter
+	private UserDataConfig userData;
 	
 	public kPvP(kSystem instance){
 		super(instance);
+		this.userData=new UserDataConfig(instance);
+		getChatListener().setUserData(getUserData());
 		this.petManager=new PetManager(getInstance());
 		this.petHandler=new PlayerPetHandler(getInstance().getServerType(),getPetManager(),UtilInv.getBase(), getPermissionManager());
 		this.signShop=new SignShop(getInstance(), getCommandHandler(), getStatsManager());
@@ -60,7 +65,7 @@ public class kPvP extends kServer{
 		this.friendManager=new FriendManager(getInstance(), getInstance().getMysql(), getCommandHandler());
 		this.gildenManager=new GildenManager(getInstance().getMysql(), GildenType.PVP, getCommandHandler(), getStatsManager());
 		getChatListener().setGildenmanager(getGildenManager());
-		this.perkManager=new PerkManager(getInstance(), getInstance().getUserData(), new Perk[]{new PerkArrowPotionEffect(),new PerkNoWaterdamage(),new PerkGoldenApple(),new PerkHat(),new PerkNoHunger(),new PerkHealPotion(1),new PerkNoFiredamage(),new PerkRunner(0.35F),new PerkDoubleJump(),new PerkDoubleXP(),new PerkDropper(),new PerkGetXP(),new PerkPotionClear(),new PerkItemName(getCommandHandler())});
+		this.perkManager=new PerkManager(getInstance(), userData, new Perk[]{new PerkArrowPotionEffect(),new PerkNoWaterdamage(),new PerkGoldenApple(),new PerkHat(),new PerkNoHunger(),new PerkHealPotion(1),new PerkNoFiredamage(),new PerkRunner(0.35F),new PerkDoubleJump(),new PerkDoubleXP(),new PerkDropper(),new PerkGetXP(),new PerkPotionClear(),new PerkItemName(getCommandHandler())});
 		new PerkListener(this.perkManager);
 		
 		

@@ -1,8 +1,26 @@
 package me.kingingo.kSystem.kServer;
 
+import net.minecraft.server.v1_8_R3.CommandEnchant;
 import lombok.Getter;
 import me.kingingo.kSystem.kSystem;
 import me.kingingo.kcore.Command.CommandHandler;
+import me.kingingo.kcore.Command.Admin.CommandCMDMute;
+import me.kingingo.kcore.Command.Admin.CommandChatMute;
+import me.kingingo.kcore.Command.Admin.CommandDebug;
+import me.kingingo.kcore.Command.Admin.CommandFly;
+import me.kingingo.kcore.Command.Admin.CommandFlyspeed;
+import me.kingingo.kcore.Command.Admin.CommandLocations;
+import me.kingingo.kcore.Command.Admin.CommandPvPMute;
+import me.kingingo.kcore.Command.Admin.CommandTp;
+import me.kingingo.kcore.Command.Admin.CommandTpHere;
+import me.kingingo.kcore.Command.Admin.CommandTppos;
+import me.kingingo.kcore.Command.Admin.CommandVanish;
+import me.kingingo.kcore.Command.Commands.CommandClearInventory;
+import me.kingingo.kcore.Command.Commands.CommandFeed;
+import me.kingingo.kcore.Command.Commands.CommandHeal;
+import me.kingingo.kcore.Command.Commands.CommandNacht;
+import me.kingingo.kcore.Command.Commands.CommandSonne;
+import me.kingingo.kcore.Command.Commands.CommandTag;
 import me.kingingo.kcore.GemsShop.GemsShop;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
@@ -34,17 +52,33 @@ public class kServer{
 		this.instance=instance;
 		this.permissionManager=new PermissionManager(getInstance(),getInstance().getServerType().getGroupType(),getInstance().getPacketManager(),getInstance().getMysql());
 		this.statsManager=new StatsManager(getInstance(), getInstance().getMysql(),getInstance().getServerType().getGameType());
-		this.commandHandler=new CommandHandler(instance);
+		this.statsManager.setAsync(true);
+		this.commandHandler=UtilServer.createCommandHandler(getInstance());
 		this.hologram=new Hologram(instance);
 		this.teleportManager=new TeleportManager(getCommandHandler(), getPermissionManager(), 3);
-		
-
 		this.chatListener=new ChatListener(getInstance(), getPermissionManager());
-		this.chatListener.setUserData(getInstance().getUserData());
+		
+		this.commandHandler.register(CommandTp.class, new CommandTp());
+		this.commandHandler.register(CommandTpHere.class, new CommandTpHere());
+		this.commandHandler.register(CommandVanish.class, new CommandVanish(instance));
+		this.commandHandler.register(CommandFly.class, new CommandFly(instance));
+		this.commandHandler.register(CommandFlyspeed.class, new CommandFlyspeed());
+		this.commandHandler.register(CommandChatMute.class, new CommandChatMute(instance));
+		this.commandHandler.register(CommandCMDMute.class, new CommandCMDMute(instance));
+		this.commandHandler.register(CommandPvPMute.class, new CommandPvPMute(instance));
+		this.commandHandler.register(CommandDebug.class, new CommandDebug());
+		this.commandHandler.register(CommandTppos.class, new CommandTppos());
+		this.commandHandler.register(CommandTag.class, new CommandTag());
+		this.commandHandler.register(CommandNacht.class, new CommandNacht());
+		this.commandHandler.register(CommandSonne.class, new CommandSonne());
+		this.commandHandler.register(CommandClearInventory.class, new CommandClearInventory());
+		this.commandHandler.register(CommandFeed.class, new CommandFeed());
+		this.commandHandler.register(CommandHeal.class, new CommandHeal());
+		this.commandHandler.register(CommandLocations.class, new CommandLocations(instance));
+		
 		new BungeeCordFirewallListener(getInstance().getMysql(),commandHandler, getInstance().getServerType().getName());
 		UtilServer.createLagListener(getCommandHandler());
 		UtilInv.getBase(getInstance());
-		UtilServer.createGemsShop(new GemsShop(getHologram(),getCommandHandler(), UtilInv.getBase(),getPermissionManager(), getInstance().getServerType()));
 	}
 	
 	public void onDisable(){}

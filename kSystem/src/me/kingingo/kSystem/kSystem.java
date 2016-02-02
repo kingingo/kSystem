@@ -1,14 +1,16 @@
 package me.kingingo.kSystem;
 
 import lombok.Getter;
-import me.kingingo.kSystem.kManager.kPvP.kPvP;
-import me.kingingo.kSystem.kManager.kSkyBlock.kSkyBlock;
 import me.kingingo.kSystem.kServer.kServer;
+import me.kingingo.kSystem.kServer.GunGame.kGunGame;
+import me.kingingo.kSystem.kServer.kPvP.kPvP;
+import me.kingingo.kSystem.kServer.kSkyBlock.kSkyBlock;
 import me.kingingo.kSystem.kServer.kWarZ.kWarZ;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Enum.ServerType;
 import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import me.kingingo.kcore.Listener.Command.ListenerCMD;
 import me.kingingo.kcore.MySQL.MySQL;
@@ -30,50 +32,46 @@ public class kSystem extends JavaPlugin{
 	@Getter
 	private PacketManager packetManager;
 	@Getter
-	private UserDataConfig userData;
-	@Getter
 	private ServerType serverType;
 	private Updater updater;
 	private kServer server;
 	
 	public void onEnable(){
 		loadConfig();
-		
-		this.mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
-		this.updater=new Updater(this);
-		this.client = new Client(this,getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"WarZ");
-		this.packetManager=new PacketManager(this, this.client);
-		this.userData=new UserDataConfig(this);
-		new MemoryFix(this);
+		this.mysql=UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
+		this.updater=UtilServer.createUpdater(this);
+		this.client = UtilServer.createClient(this,getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),getConfig().getString("Config.Server"));
+		this.packetManager=UtilServer.createPacketManager(this);
+		Language.load(getMysql());
 		new ListenerCMD(this);
 		
-		switch(getConfig().getString("Config.Server")){
-		case "PvP": 
+		switch(getConfig().getString("Config.Server").toLowerCase()){
+		case "pvp": 
 			serverType=ServerType.PVP;
 			this.server=new kPvP(this);
 			break;
-		case "SkyBlock": 
+		case "skyblock": 
 			serverType=ServerType.SKYBLOCK;
 			this.server=new kSkyBlock(this);
 			break;
-		case "WarZ": 
+		case "warz": 
 			serverType=ServerType.WARZ;
 			this.server=new kWarZ(this);
 			break;
+		case "gungame": 
+			serverType=ServerType.GUNGAME;
+			this.server=new kGunGame(this);
+			break;
 		default:
 			System.err.println("[kSystem]: ServerType nicht erkannt ("+getConfig().getString("Config.Server")+")");
-			mysql.close();
-			client.disconnect(true);
+			UtilServer.disable();
 			System.exit(0);
 		}
 	}
 	
 	public void onDisable(){
 		this.server.onDisable();
-		this.userData.saveAllConfigs();
-		this.mysql.close();
-		this.client.disconnect(true);
-		this.updater.stop();
+		UtilServer.disable();
 	}
 	
 	public void loadConfig(){
