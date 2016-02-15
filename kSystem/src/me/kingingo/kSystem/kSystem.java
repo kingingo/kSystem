@@ -19,7 +19,6 @@ import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Update.Updater;
 import me.kingingo.kcore.UserDataConfig.UserDataConfig;
 import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.memory.MemoryFix;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,7 +39,7 @@ public class kSystem extends JavaPlugin{
 		loadConfig();
 		this.mysql=UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 		this.updater=UtilServer.createUpdater(this);
-		this.client = UtilServer.createClient(this,getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),getConfig().getString("Config.Server"));
+		this.client = UtilServer.createClient(this,getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),getConfig().getString("Config.Server")+getConfig().getString("Config.ID"));
 		this.packetManager=UtilServer.createPacketManager(this);
 		Language.load(getMysql());
 		new ListenerCMD(this);
@@ -76,6 +75,7 @@ public class kSystem extends JavaPlugin{
 	
 	public void loadConfig(){
 	    getConfig().addDefault("Config.Server", "PvP");
+	    getConfig().addDefault("Config.ID", "1");
 		getConfig().addDefault("Config.MySQL.Host", "NONE");
 	    getConfig().addDefault("Config.MySQL.DB", "NONE");
 	    getConfig().addDefault("Config.MySQL.User", "NONE");

@@ -1,46 +1,77 @@
 package me.kingingo.kSystem.kServer.GunGame;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 import lombok.Getter;
+import me.kingingo.kSystem.kSystem;
+import me.kingingo.kcore.Disguise.DisguiseType;
+import me.kingingo.kcore.Disguise.disguises.DisguiseBase;
+import me.kingingo.kcore.Disguise.disguises.livings.DisguisePlayer;
+import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.PLAYER_VOTE;
+import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Packet.Packets.TWITTER_PLAYER_FOLLOW;
 import me.kingingo.kcore.Packet.Packets.WORLD_CHANGE_DATA;
 import me.kingingo.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import me.kingingo.kcore.StatsManager.Stats;
-import me.kingingo.kcore.StatsManager.Event.PlayerStatsCreateEvent;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsChangeEvent;
 import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.UpdateAsync.UpdateAsyncType;
+import me.kingingo.kcore.UpdateAsync.Event.UpdateAsyncEvent;
+import me.kingingo.kcore.UserDataConfig.Events.UserDataConfigLoadEvent;
 import me.kingingo.kcore.Util.TabTitle;
-import me.kingingo.kcore.Util.UtilNumber;
+import me.kingingo.kcore.Util.TimeSpan;
+import me.kingingo.kcore.Util.UtilEnt;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilWorldGuard;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.kListen.kRank;
 import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
+
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 public class kGunGameListener extends kListener{
 
@@ -48,12 +79,40 @@ public class kGunGameListener extends kListener{
 	private kGunGame instance;
 	private ArrayList<UUID> vote_list;
 	private HashMap<Player,Player> last_hit;
+	private HashMap<Player,Location> last_hit_loc;
+	
+	private HashMap<Player,String> kills_score;
+	private HashMap<Player,String> deaths_score;
+	private ArrayList<Player> kills_update;
+	private ArrayList<Player> deaths_update;
 	
 	public kGunGameListener(kGunGame instance) {
 		super(instance.getInstance(), "kGunGameListener");
 		this.instance=instance;
 		this.last_hit=new HashMap<>();
+		this.last_hit_loc=new HashMap<>();
 		this.vote_list= new ArrayList<>();
+		this.kills_score=new HashMap<>();
+		this.deaths_score=new HashMap<>();
+		this.kills_update=new ArrayList<>();
+		this.deaths_update=new ArrayList<>();
+	}
+	
+	
+	
+	@EventHandler
+    public void onBlockFromTo(BlockFromToEvent event) {
+      int id = event.getBlock().getTypeId();
+      if(id == 8 || id == 9) {
+        event.setCancelled(true);
+      }
+    }
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void destroyCAN(PlayerInteractEvent ev){
+		if((UtilEvent.isAction(ev, ActionType.PHYSICAL)&& (ev.getClickedBlock().getType() == Material.SOIL))){
+			ev.setCancelled(true);
+		}
 	}
 	
 	Player player;
@@ -70,7 +129,7 @@ public class kGunGameListener extends kListener{
 				if(UtilServer.getDeliveryPet()!=null){
 					UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
 				}
-				getInstance().getKit().setLevel(player, player.getLevel()+1);
+				getInstance().getKit().setLevel(player, player.getLevel()+2);
 				player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "VOTE_THX"));
 			}else{
 				vote_list.add(vote.getUuid());
@@ -86,11 +145,16 @@ public class kGunGameListener extends kListener{
 					p.sendMessage(Language.getText(p,"PREFIX")+Language.getText(p, "TWITTER_REMOVE"));
 				}else{
 					UtilServer.getDeliveryPet().deliveryBlock(p, "§cTwitter Reward");
-					getInstance().getKit().setLevel(player, player.getLevel()+1);
+					getInstance().getKit().setLevel(p, p.getLevel()+1);
 					p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "MONEY_RECEIVE_FROM", new String[]{"§bThe Delivery Jockey!","300"}));
 				}
 			}
 		}
+	}
+	
+	@EventHandler
+	public void PlayerArmorStandManipulate(PlayerArmorStandManipulateEvent ev){
+		if(!ev.getPlayer().isOp())ev.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -128,25 +192,92 @@ public class kGunGameListener extends kListener{
 	}
 	
 	@EventHandler
+	public void statsUpdate(UpdateEvent ev){
+		if(ev.getType()==UpdateType.SEC_3){
+			for(Player player : kills_update){
+				try{
+					if(player.getScoreboard()==null)continue;
+					if(player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)==null)continue;
+					if(kills_score.containsKey(player)){
+						UtilScoreboard.resetScore(player.getScoreboard(), kills_score.get(player),  DisplaySlot.SIDEBAR);
+					}else{
+						UtilScoreboard.resetScore(player.getScoreboard(), 9, DisplaySlot.SIDEBAR);
+					}
+					
+					kills_score.put(player, "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, player)+" ");
+					UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, player)+" ", DisplaySlot.SIDEBAR,9);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			kills_update.clear();
+			
+			for(Player player : deaths_update){
+				try{
+					if(player.getScoreboard()==null)continue;
+					if(player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)==null)continue;
+					if(deaths_score.containsKey(player)){
+						UtilScoreboard.resetScore(player.getScoreboard(), deaths_score.get(player),  DisplaySlot.SIDEBAR);
+					}else{
+						UtilScoreboard.resetScore(player.getScoreboard(), 6, DisplaySlot.SIDEBAR);
+					}
+					
+					deaths_score.put(player, "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, player)+" ");
+					UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, player)+" ", DisplaySlot.SIDEBAR, 6);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			deaths_update.clear();
+		}
+	}
+	
+	@EventHandler
+	public void statsChange(PlayerStatsChangeEvent ev){
+		if(ev.getPlayer().getScoreboard()==null)return;
+		if(ev.getPlayer().getScoreboard().getObjective(DisplaySlot.SIDEBAR)==null)return;
+		if(ev.getStats()==Stats.KILLS&&!kills_update.contains(ev.getPlayer())){
+			kills_update.add(ev.getPlayer());
+		}else if(ev.getStats()==Stats.DEATHS&&!deaths_update.contains(ev.getPlayer())){
+			deaths_update.add(ev.getPlayer());
+		}
+	}
+	
+	@EventHandler
 	public void setboard(PlayerSetScoreboardEvent ev){
 		UtilScoreboard.addBoard(ev.getPlayer().getScoreboard(), DisplaySlot.SIDEBAR, "§f§lEPICPVP - GUNGAME");
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "    ", DisplaySlot.SIDEBAR, 11);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§cKills:", DisplaySlot.SIDEBAR, 10);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aKills:", DisplaySlot.SIDEBAR, 10);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, ev.getPlayer())+" ", DisplaySlot.SIDEBAR, 9);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "   ", DisplaySlot.SIDEBAR, 8);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§cDeaths:", DisplaySlot.SIDEBAR, 7);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aDeaths:", DisplaySlot.SIDEBAR, 7);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, ev.getPlayer()), DisplaySlot.SIDEBAR, 6);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "  ", DisplaySlot.SIDEBAR, 5);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§cMax Level:", DisplaySlot.SIDEBAR, 4);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aHöchstes Level:", DisplaySlot.SIDEBAR, 4);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.LEVEL, ev.getPlayer())+"  ", DisplaySlot.SIDEBAR, 3);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), " ", DisplaySlot.SIDEBAR, 2);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§cMap Change in", DisplaySlot.SIDEBAR, 1);
 		UtilScoreboard.addLiveBoard(ev.getPlayer().getScoreboard(), ChatColor.RED+""+ChatColor.BOLD+"❤");
 		getInstance().getKit().setLevel(ev.getPlayer(), ev.getPlayer().getLevel());
 	}
 	
 	@EventHandler
+	public void config(UserDataConfigLoadEvent ev){
+		if(getInstance().getInstance().getConfig().getLong("LevelResetAll") > ev.getConfig().getLong("lastLogin")){
+			getInstance().getKit().setLevel(ev.getPlayer(), 1);
+		}else{
+			if( (System.currentTimeMillis() - ev.getConfig().getLong("lastLogin")) > TimeSpan.HOUR*2){
+				getInstance().getKit().setLevel(ev.getPlayer(), 1);
+			}else{
+				getInstance().getKit().setLevel(ev.getPlayer(), ev.getPlayer().getLevel());
+			}
+		}
+	}
+	
+	@EventHandler
 	public void quit(PlayerQuitEvent ev){
+		if(this.last_hit.containsKey(ev.getPlayer()))this.last_hit.remove(ev.getPlayer());
+		
+		getInstance().getUserData().getConfig(ev.getPlayer()).set("lastLogin", System.currentTimeMillis());
 		ev.setQuitMessage(null);
 		getInstance().getStatsManager().SaveAllPlayerData(ev.getPlayer());
 	}
@@ -158,31 +289,50 @@ public class kGunGameListener extends kListener{
 			player.showPlayer(ev.getPlayer());
 			ev.getPlayer().showPlayer(player);
 		}
+		ev.getPlayer().setGameMode(GameMode.ADVENTURE);
 		getInstance().getStatsManager().loadPlayerStats(ev.getPlayer());
 		ev.setJoinMessage(null);
 		ev.getPlayer().teleport(getInstance().getSpawn());
 		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEpicPvP§8.§eeu §8| §aGunGame-Server", "§aTeamSpeak: §7ts.EpicPvP.eu §8| §eWebsite: §7EpicPvP.eu");
 	}
 	
+	SERVER_STATUS s;
+	@EventHandler
+	public void send(UpdateAsyncEvent ev){
+		if(ev.getType()==UpdateAsyncType.SEC_4){
+			if(s==null)s= new SERVER_STATUS(GameState.LobbyPhase, UtilServer.getPlayers().size(), Bukkit.getMaxPlayers(),"MAP",GameType.GUNGAME,getInstance().getInstance().getConfig().getString("Config.ID"), false);
+			s.setOnline(UtilServer.getPlayers().size());
+			s.setMap(getInstance().getMap().getLastMap());
+			getInstance().getInstance().getPacketManager().SendPacket("hub",s);
+		}
+	}
+	
 	@EventHandler
 	public void water(UpdateEvent ev){
-		if(ev.getType()==UpdateType.FASTER){
+		if(ev.getType()==UpdateType.FAST){
 			try{
 				for(Player player : UtilServer.getPlayers()){
+					if(player.getGameMode()==GameMode.CREATIVE)continue;
 					if(player.getLocation().getBlock().getType()==Material.STATIONARY_WATER){
 						if(last_hit.containsKey(player)&&last_hit.get(player).getScoreboard()!=null&&player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)!=null){
-							getInstance().getStatsManager().addInt(last_hit.get(player), 1, Stats.KILLS);
-							UtilScoreboard.resetScore(last_hit.get(player).getScoreboard(), 9, DisplaySlot.SIDEBAR);
-							UtilScoreboard.setScore(last_hit.get(player).getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, last_hit.get(player))+" ", DisplaySlot.SIDEBAR,9);
-							getInstance().getKit().setLevel(last_hit.get(player), last_hit.get(player).getLevel()+1);
+							if(UtilWorldGuard.RegionFlag(last_hit_loc.get(player), DefaultFlag.PVP)){
+								last_hit.get(player).sendMessage(Language.getText(last_hit.get(player),"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(last_hit.get(player),"GUNGAME_KILL", player.getName()));
+								player.sendMessage(Language.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(player,"GUNGAME_KILLED_BY", last_hit.get(player).getName()));
+								player.sendMessage(Language.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(player, "HEART",new String[]{last_hit.get(player).getName(),UtilPlayer.getHealthBar(last_hit.get(player))}));
+
+								UtilPlayer.addPotionEffect(last_hit.get(player), PotionEffectType.REGENERATION, 3, 4);
+								getInstance().getStatsManager().addInt(last_hit.get(player), 1, Stats.KILLS);
+								getInstance().getKit().setLevel(last_hit.get(player), last_hit.get(player).getLevel()+1);
+								last_hit.get(player).playSound(last_hit.get(player).getLocation(), Sound.LEVEL_UP,1f, 1f);
+							}
+							last_hit_loc.remove(player);
 							last_hit.remove(player);
 						}
 
 						getInstance().getStatsManager().addInt(player, 1, Stats.DEATHS);
-						UtilScoreboard.resetScore(player.getScoreboard(), 6, DisplaySlot.SIDEBAR);
-						UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, player)+" ", DisplaySlot.SIDEBAR, 6);
 						player.teleport(getInstance().getSpawn());
-						getInstance().getKit().setLevel(player);
+						player.setHealth(player.getMaxHealth());
+						getInstance().getKit().death(player);
 					}
 				}
 			}catch(Exception e){
@@ -191,79 +341,80 @@ public class kGunGameListener extends kListener{
 		}
 		
 	}
+
+	Player vv;
+	Player aa;
+	@EventHandler
+	public void damage(EntityDamageByEntityEvent ev){
+		if(ev.getEntity() instanceof Player){
+			vv=(Player)ev.getEntity();
+			
+			if(ev.getDamager() instanceof Player){
+				aa=(Player)ev.getDamager();
+				
+				if(aa.getItemInHand().getType()!=null && aa.getItemInHand().getDurability() >= (aa.getItemInHand().getType().getMaxDurability()-5)){
+					aa.getItemInHand().setDurability((short)0);
+				}
+
+				last_hit_loc.put(vv, aa.getLocation());
+				last_hit.put(vv, aa);
+			}else if(ev.getDamager() instanceof Projectile && ((Projectile)ev.getDamager()).getShooter() instanceof Player){
+				aa=(Player)((Projectile)ev.getDamager()).getShooter();
+				last_hit.put(vv, aa);
+				last_hit_loc.put(vv, aa.getLocation());
+			}
+			
+			if(vv.getInventory().getHelmet()!=null && vv.getInventory().getHelmet().getDurability() >= (vv.getInventory().getHelmet().getType().getMaxDurability()-5)){
+				vv.getInventory().getHelmet().setDurability((short)0);
+			}
+			
+			if(vv.getInventory().getChestplate()!=null && vv.getInventory().getChestplate().getDurability() >= (vv.getInventory().getChestplate().getType().getMaxDurability()-5)){
+				vv.getInventory().getChestplate().setDurability((short)0);
+			}
+			
+			if(vv.getInventory().getLeggings()!=null && vv.getInventory().getLeggings().getDurability() >= (vv.getInventory().getLeggings().getType().getMaxDurability()-5)){
+				vv.getInventory().getLeggings().setDurability((short)0);
+			}
+			
+			if(vv.getInventory().getBoots()!=null && vv.getInventory().getBoots().getDurability() >= (vv.getInventory().getBoots().getType().getMaxDurability()-5)){
+				vv.getInventory().getBoots().setDurability((short)0);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void respawn(PlayerRespawnEvent ev){
+		ev.setRespawnLocation(getInstance().getSpawn());
+	}
 	
 	Player v;
 	Player a;
 	@EventHandler(priority=EventPriority.LOWEST)
-	public void damage(EntityDamageByEntityEvent ev){
-		if(ev.isCancelled())return;
+	public void death(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player){
 			v=(Player)ev.getEntity();
+			ev.setDeathMessage(null);
+			ev.setDroppedExp(0);
+			ev.setKeepInventory(true);
+			ev.setKeepLevel(true);
+			getInstance().getKit().death(v);
 			
-			if(UtilPlayer.getHealth(v)-ev.getDamage() <=0){
-				v.setHealth(1);
-				ev.setCancelled(true);
-				ev.setDamage(0);
-				getInstance().getStatsManager().addInt(v, 1, Stats.DEATHS);
-				UtilScoreboard.resetScore(v.getScoreboard(), 6, DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(v.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, v)+" ", DisplaySlot.SIDEBAR, 6);
-				v.teleport(getInstance().getSpawn());
-				v.setHealth(v.getMaxHealth());
-				getInstance().getKit().setLevel(v);
-				last_hit.remove(v);
-
-				
-				if(ev.getDamager() instanceof Player){
-					a=(Player)ev.getDamager();
-					a.sendMessage(Language.getText(a,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"KILL_BY", new String[]{v.getName(),a.getName()}));
-					v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"KILL_BY", new String[]{v.getName(),a.getName()}));
-					getInstance().getKit().setLevel(a, a.getLevel()+1);
-					UtilPlayer.addPotionEffect(a, PotionEffectType.REGENERATION, 5, 2);
-					getInstance().getStatsManager().addInt(a, 1, Stats.KILLS);
-					UtilScoreboard.resetScore(a.getScoreboard(), 9, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(a.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, a)+" ", DisplaySlot.SIDEBAR,9);
-				}else if(ev.getDamager() instanceof Projectile && ((Projectile)ev.getDamager()).getShooter() instanceof Player){
-					a=(Player)((Projectile)ev.getDamager()).getShooter();
-					a.sendMessage(Language.getText(a,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"KILL_BY", new String[]{v.getName(),a.getName()}));
-					v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"KILL_BY", new String[]{v.getName(),a.getName()}));
-					getInstance().getKit().setLevel(a, a.getLevel()+1);
-					UtilPlayer.addPotionEffect(a, PotionEffectType.REGENERATION, 5, 2);
-					getInstance().getStatsManager().addInt(a, 1, Stats.KILLS);
-					UtilScoreboard.resetScore(a.getScoreboard(),9, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(a.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, a)+" ", DisplaySlot.SIDEBAR, 9);
-				}else{
-					v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"DEATH", v.getName()));
-				}
-				return;
-			}
-
-			if(v.getInventory().getHelmet()!=null && v.getInventory().getHelmet().getDurability() >= (v.getInventory().getHelmet().getType().getMaxDurability()-5)){
-				v.getInventory().getHelmet().setDurability((short)0);
-			}
+			getInstance().getStatsManager().addInt(v, 1, Stats.DEATHS);
+			last_hit_loc.remove(v);
+			last_hit.remove(v);
+			UtilPlayer.RespawnNow(v, getInstance().getInstance());
 			
-			if(v.getInventory().getChestplate()!=null && v.getInventory().getChestplate().getDurability() >= (v.getInventory().getChestplate().getType().getMaxDurability()-5)){
-				v.getInventory().getChestplate().setDurability((short)0);
-			}
-			
-			if(v.getInventory().getLeggings()!=null && v.getInventory().getLeggings().getDurability() >= (v.getInventory().getLeggings().getType().getMaxDurability()-5)){
-				v.getInventory().getLeggings().setDurability((short)0);
-			}
-			
-			if(v.getInventory().getBoots()!=null && v.getInventory().getBoots().getDurability() >= (v.getInventory().getBoots().getType().getMaxDurability()-5)){
-				v.getInventory().getBoots().setDurability((short)0);
-			}
-
-			if(ev.getDamager() instanceof Player){
-				a=(Player)ev.getDamager();
-				
-				if(a.getItemInHand().getType()!=null && a.getItemInHand().getDurability() >= (a.getItemInHand().getType().getMaxDurability()-5)){
-					a.getItemInHand().setDurability((short)0);
-				}
-				
-				last_hit.put(v, a);
-			}else if(ev.getDamager() instanceof Projectile && ((Projectile)ev.getDamager()).getShooter() instanceof Player){
-				a=(Player)((Projectile)ev.getDamager()).getShooter();
-				last_hit.put(v, a);
+			if(ev.getEntity().getKiller() instanceof Player){
+				a=(Player)ev.getEntity().getKiller();
+				a.sendMessage(Language.getText(a,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(a,"GUNGAME_KILL", v.getName()));
+				a.playSound(a.getLocation(), Sound.LEVEL_UP,1f, 1f);
+				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"GUNGAME_KILLED_BY", a.getName()));
+				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v, "HEART",new String[]{a.getName(),UtilPlayer.getHealthBar(a)}));
+				getInstance().getKit().setLevel(a, a.getLevel()+1);
+				UtilPlayer.addPotionEffect(a, PotionEffectType.REGENERATION, 3, 4);
+				getInstance().getStatsManager().addInt(a, 1, Stats.KILLS);
+			}else{
+				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"DEATH", v.getName()));
 			}
 		}
 	}

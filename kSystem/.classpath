@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="C:/Dev/spigot.jar"/>
 	<classpathentry kind="lib" path="C:/Dev/lombok.jar"/>
 	<classpathentry kind="lib" path="C:/Dev/kCore.jar"/>
+	<classpathentry kind="lib" path="C:/Dev/WorldGuard.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -65,7 +65,7 @@ public class kPvP extends kServer{
 		this.friendManager=new FriendManager(getInstance(), getInstance().getMysql(), getCommandHandler());
 		this.gildenManager=new GildenManager(getInstance().getMysql(), GildenType.PVP, getCommandHandler(), getStatsManager());
 		getChatListener().setGildenmanager(getGildenManager());
-		this.perkManager=new PerkManager(getInstance(), userData, new Perk[]{new PerkArrowPotionEffect(),new PerkNoWaterdamage(),new PerkGoldenApple(),new PerkHat(),new PerkNoHunger(),new PerkHealPotion(1),new PerkNoFiredamage(),new PerkRunner(0.35F),new PerkDoubleJump(),new PerkDoubleXP(),new PerkDropper(),new PerkGetXP(),new PerkPotionClear(),new PerkItemName(getCommandHandler())});
+		this.perkManager=new PerkManager(getInstance(), new Perk[]{new PerkArrowPotionEffect(),new PerkNoWaterdamage(),new PerkGoldenApple(),new PerkHat(),new PerkNoHunger(),new PerkHealPotion(1),new PerkNoFiredamage(),new PerkRunner(0.35F),new PerkDoubleJump(),new PerkDoubleXP(),new PerkDropper(),new PerkGetXP(),new PerkPotionClear(),new PerkItemName(getCommandHandler())});
 		new PerkListener(this.perkManager);
 		
 		

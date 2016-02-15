@@ -2,3 +2,4 @@ name: kSystem
 author: KingIngo
 version: 1.8
 main: me.kingingo.kSystem.kSystem
+depend: [kCore]
