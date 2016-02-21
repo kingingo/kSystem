@@ -15,6 +15,7 @@ import me.kingingo.kSystem.kServer.kServer;
 import me.kingingo.kSystem.kServer.GunGame.Commands.CommandGunGame;
 import me.kingingo.kSystem.kServer.GunGame.Commands.CommandKit;
 import me.kingingo.kSystem.kServer.GunGame.Commands.CommandMap;
+import me.kingingo.kcore.AACHack.AACHack;
 import me.kingingo.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import me.kingingo.kcore.Command.Admin.CommandLocations;
 import me.kingingo.kcore.Command.Commands.CommandStats;
@@ -55,6 +56,8 @@ public class kGunGame extends kServer{
 	public kGunGame(kSystem instance){
 		super(instance);
     	UtilWorld.LoadWorld(new WorldCreator("gungame"), new CleanroomChunkGenerator("64,WATER"));
+    	
+//    	new AACHack("gungame", getPermissionManager().getMysql(),instance.getPacketManager());
     	
 		this.kit=new CommandKit(this);
 		this.map=new CommandMap(this);
