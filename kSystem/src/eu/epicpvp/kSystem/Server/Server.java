@@ -1,45 +1,45 @@
-package me.kingingo.kSystem.kServer;
+package eu.epicpvp.kSystem.Server;
 
 import net.minecraft.server.v1_8_R3.CommandEnchant;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.kSystem.ServerSystem;
 import lombok.Getter;
-import me.kingingo.kSystem.kSystem;
-import me.kingingo.kcore.Command.CommandHandler;
-import me.kingingo.kcore.Command.Admin.CommandCMDMute;
-import me.kingingo.kcore.Command.Admin.CommandChatMute;
-import me.kingingo.kcore.Command.Admin.CommandDebug;
-import me.kingingo.kcore.Command.Admin.CommandFly;
-import me.kingingo.kcore.Command.Admin.CommandFlyspeed;
-import me.kingingo.kcore.Command.Admin.CommandLocations;
-import me.kingingo.kcore.Command.Admin.CommandPvPMute;
-import me.kingingo.kcore.Command.Admin.CommandStatsAdmin;
-import me.kingingo.kcore.Command.Admin.CommandToggle;
-import me.kingingo.kcore.Command.Admin.CommandTp;
-import me.kingingo.kcore.Command.Admin.CommandTpHere;
-import me.kingingo.kcore.Command.Admin.CommandTppos;
-import me.kingingo.kcore.Command.Admin.CommandVanish;
-import me.kingingo.kcore.Command.Commands.CommandClearInventory;
-import me.kingingo.kcore.Command.Commands.CommandFeed;
-import me.kingingo.kcore.Command.Commands.CommandHeal;
-import me.kingingo.kcore.Command.Commands.CommandMsg;
-import me.kingingo.kcore.Command.Commands.CommandNacht;
-import me.kingingo.kcore.Command.Commands.CommandR;
-import me.kingingo.kcore.Command.Commands.CommandSonne;
-import me.kingingo.kcore.Command.Commands.CommandTag;
-import me.kingingo.kcore.GemsShop.GemsShop;
-import me.kingingo.kcore.Hologram.Hologram;
-import me.kingingo.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
-import me.kingingo.kcore.Listener.Chat.ChatListener;
-import me.kingingo.kcore.Permission.PermissionManager;
-import me.kingingo.kcore.StatsManager.StatsManager;
-import me.kingingo.kcore.TeleportManager.TeleportManager;
-import me.kingingo.kcore.UserDataConfig.UserDataConfig;
-import me.kingingo.kcore.Util.UtilInv;
-import me.kingingo.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Command.CommandHandler;
+import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
+import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
+import eu.epicpvp.kcore.Command.Admin.CommandDebug;
+import eu.epicpvp.kcore.Command.Admin.CommandFly;
+import eu.epicpvp.kcore.Command.Admin.CommandFlyspeed;
+import eu.epicpvp.kcore.Command.Admin.CommandLocations;
+import eu.epicpvp.kcore.Command.Admin.CommandPvPMute;
+import eu.epicpvp.kcore.Command.Admin.CommandToggle;
+import eu.epicpvp.kcore.Command.Admin.CommandTp;
+import eu.epicpvp.kcore.Command.Admin.CommandTpHere;
+import eu.epicpvp.kcore.Command.Admin.CommandTppos;
+import eu.epicpvp.kcore.Command.Admin.CommandVanish;
+import eu.epicpvp.kcore.Command.Commands.CommandClearInventory;
+import eu.epicpvp.kcore.Command.Commands.CommandFeed;
+import eu.epicpvp.kcore.Command.Commands.CommandHeal;
+import eu.epicpvp.kcore.Command.Commands.CommandMsg;
+import eu.epicpvp.kcore.Command.Commands.CommandNacht;
+import eu.epicpvp.kcore.Command.Commands.CommandR;
+import eu.epicpvp.kcore.Command.Commands.CommandSonne;
+import eu.epicpvp.kcore.Command.Commands.CommandTag;
+import eu.epicpvp.kcore.GemsShop.GemsShop;
+import eu.epicpvp.kcore.Hologram.Hologram;
+import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
+import eu.epicpvp.kcore.Listener.Chat.ChatListener;
+import eu.epicpvp.kcore.Permission.PermissionManager;
+import eu.epicpvp.kcore.StatsManager.StatsManager;
+import eu.epicpvp.kcore.TeleportManager.TeleportManager;
+import eu.epicpvp.kcore.UserDataConfig.UserDataConfig;
+import eu.epicpvp.kcore.Util.UtilInv;
+import eu.epicpvp.kcore.Util.UtilServer;
 
-public class kServer{
+public class Server{
 
 	@Getter
-	private kSystem instance;
+	private ServerSystem instance;
 	@Getter
 	private Hologram hologram;
 	@Getter
@@ -51,15 +51,17 @@ public class kServer{
 	@Getter
 	private StatsManager statsManager;
 	@Getter
+	private StatsManager money;
+	@Getter
 	private ChatListener chatListener;
 	@Getter
 	private UserDataConfig userData;
 	
-	public kServer(kSystem instance){
+	public Server(ServerSystem instance){
 		this.instance=instance;
-		this.permissionManager=new PermissionManager(getInstance(),getInstance().getServerType().getGroupType(),getInstance().getPacketManager(),getInstance().getMysql());
-		this.statsManager=new StatsManager(getInstance(), getInstance().getMysql(),getInstance().getServerType().getGameType());
-		this.statsManager.setAsync(true);
+		this.permissionManager=new PermissionManager(instance);
+		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);
+		this.money=new StatsManager(getInstance(), getInstance().getClient(), GameType.Money);
 		this.commandHandler=UtilServer.createCommandHandler(getInstance());
 		this.hologram=new Hologram(instance);
 		this.teleportManager=new TeleportManager(getCommandHandler(), getPermissionManager(), 3);
@@ -86,7 +88,7 @@ public class kServer{
 		this.commandHandler.register(CommandR.class, new CommandR(instance));
 		this.commandHandler.register(CommandToggle.class, new CommandToggle(instance));
 		this.commandHandler.register(CommandLocations.class, new CommandLocations(instance));
-		this.commandHandler.register(CommandStatsAdmin.class, new CommandStatsAdmin(statsManager));
+//		this.commandHandler.register(CommandStatsAdmin.class, new CommandStatsAdmin(statsManager));
 		
 		new BungeeCordFirewallListener(getInstance().getMysql(),commandHandler, getInstance().getServerType().getName());
 		UtilServer.createLagListener(getCommandHandler());

@@ -1,26 +1,7 @@
-package me.kingingo.kSystem.kServer.GunGame.Commands;
+package eu.epicpvp.kSystem.Server.GunGame.Commands;
 
 import java.io.File;
 import java.util.HashMap;
-
-import lombok.Getter;
-import me.kingingo.kSystem.kServer.kServer;
-import me.kingingo.kSystem.kServer.GunGame.Events.PlayerGunGameLevelUpEvent;
-import me.kingingo.kcore.Command.CommandHandler;
-import me.kingingo.kcore.Command.CommandHandler.Sender;
-import me.kingingo.kcore.Command.Commands.CommandDelKit;
-import me.kingingo.kcore.Command.Commands.Events.AddKitEvent;
-import me.kingingo.kcore.Command.Commands.Events.DeleteKitEvent;
-import me.kingingo.kcore.Language.Language;
-import me.kingingo.kcore.Permission.kPermission;
-import me.kingingo.kcore.StatsManager.Stats;
-import me.kingingo.kcore.Util.UtilEffect;
-import me.kingingo.kcore.Util.UtilNumber;
-import me.kingingo.kcore.Util.UtilParticle;
-import me.kingingo.kcore.Util.UtilScoreboard;
-import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.kConfig.kConfig;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -30,6 +11,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
+
+import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.kSystem.Server.Server;
+import eu.epicpvp.kSystem.Server.GunGame.Events.PlayerGunGameLevelUpEvent;
+import eu.epicpvp.kcore.Command.CommandHandler.Sender;
+import eu.epicpvp.kcore.Command.Commands.CommandDelKit;
+import eu.epicpvp.kcore.Command.Commands.Events.AddKitEvent;
+import eu.epicpvp.kcore.Command.Commands.Events.DeleteKitEvent;
+import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Util.UtilEffect;
+import eu.epicpvp.kcore.Util.UtilParticle;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilTime;
+import eu.epicpvp.kcore.kConfig.kConfig;
+import lombok.Getter;
 
 public class CommandKit implements CommandExecutor{
 
@@ -43,9 +41,9 @@ public class CommandKit implements CommandExecutor{
 	@Getter
 	private HashMap<String,ItemStack[]> kits_armor = new HashMap<>();
 	@Getter
-	private kServer instance;
+	private Server instance;
 	
-	public CommandKit(kServer instance){
+	public CommandKit(Server instance){
 		this.config=new kConfig(new File("plugins"+File.separator+instance.getInstance().getPlugin(instance.getInstance().getClass()).getName()+File.separator+"kits.yml"));
 		this.instance=instance;
 		for(String kit : config.getPathList("kits").keySet()){
@@ -67,15 +65,15 @@ public class CommandKit implements CommandExecutor{
 			getInstance().getUserData().getConfig(player).set("Last_LevelUP", System.currentTimeMillis());
 		}
 		
-		if(level<3&&player.hasPermission(kPermission.GUNGAME_START_LEVEL_3.getPermissionToString())){
+		if(level<3&&player.hasPermission(PermissionType.GUNGAME_START_LEVEL_3.getPermissionToString())){
 			level=3;
 			getInstance().getUserData().getConfig(player).set("Last_LevelUP", System.currentTimeMillis());
 		}
 		
-		if(player.getScoreboard()!=null&&player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)!=null&&getInstance().getStatsManager().getInt(Stats.LEVEL, player)<level){
-			getInstance().getStatsManager().setInt(player, level, Stats.LEVEL);
+		if(player.getScoreboard()!=null&&player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)!=null&&getInstance().getStatsManager().getInt(player, StatsKey.LEVEL)<level){
+			getInstance().getStatsManager().set(player, StatsKey.LEVEL,level);
 			UtilScoreboard.resetScore(player.getScoreboard(),3, DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.LEVEL, player)+"  ", DisplaySlot.SIDEBAR, 3);
+			UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(player, StatsKey.LEVEL)+"  ", DisplaySlot.SIDEBAR, 3);
 		}
 		
 		Bukkit.getPluginManager().callEvent(new PlayerGunGameLevelUpEvent(player, level));
@@ -88,13 +86,13 @@ public class CommandKit implements CommandExecutor{
 			getInstance().getUserData().getConfig(player).set("Last_Level", level);
 		}
 		
-		if(player.hasPermission(kPermission.GUNGAME_SKIP_LEVEL_10.getPermissionToString())&&level == 10||level == 20||level == 30||level == 40||level == 50||level == 60||level == 70||level == 80||level == 90||level == 100||level == 110||level == 120||level == 130){
+		if(player.hasPermission(PermissionType.GUNGAME_SKIP_LEVEL_10.getPermissionToString())&&level == 10||level == 20||level == 30||level == 40||level == 50||level == 60||level == 70||level == 80||level == 90||level == 100||level == 110||level == 120||level == 130){
 			level++;
-		}else if(player.hasPermission(kPermission.GUNGAME_SKIP_LEVEL_15.getPermissionToString()) && (level == 15||level == 30||level == 45||level == 60||level == 75||level == 90||level == 105||level == 120||level == 135)){
+		}else if(player.hasPermission(PermissionType.GUNGAME_SKIP_LEVEL_15.getPermissionToString()) && (level == 15||level == 30||level == 45||level == 60||level == 75||level == 90||level == 105||level == 120||level == 135)){
 			level++;
-		}else if(player.hasPermission(kPermission.GUNGAME_SKIP_LEVEL_20.getPermissionToString())&&(level == 20||level == 40||level == 60||level == 80||level == 100||level == 120||level == 140)){
+		}else if(player.hasPermission(PermissionType.GUNGAME_SKIP_LEVEL_20.getPermissionToString())&&(level == 20||level == 40||level == 60||level == 80||level == 100||level == 120||level == 140)){
 			level++;
-		}else if(player.hasPermission(kPermission.GUNGAME_SKIP_LEVEL_25.getPermissionToString()) && (level == 25||level == 50||level == 75||level == 100||level == 125||level == 150) ){
+		}else if(player.hasPermission(PermissionType.GUNGAME_SKIP_LEVEL_25.getPermissionToString()) && (level == 25||level == 50||level == 75||level == 100||level == 125||level == 150) ){
 			level++;
 		}
 		
@@ -121,7 +119,7 @@ public class CommandKit implements CommandExecutor{
 		}
 	}
 	
-	@me.kingingo.kcore.Command.CommandHandler.Command(command = "kit", sender = Sender.PLAYER)
+	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "kit", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2,String[] args) {
 		player=(Player)sender;
 		
@@ -133,8 +131,10 @@ public class CommandKit implements CommandExecutor{
 				player.sendMessage(Language.getText(player, "PREFIX")+"Kits: "+(kits.equalsIgnoreCase("") ? Language.getText(player, "KITS_EMPTY") : kits.substring(0, kits.length()-1)));
 			}else{
 					if(args[0].equalsIgnoreCase("all")){
+						System.out.println("ALL");
 						try{
 							int l = Integer.valueOf(args[1].toLowerCase());
+							System.out.println("ALL   "+l +" "+kits_content.containsKey("kit"+l));
 							if(kits_content.containsKey("kit"+l)){
 								for(Player p : UtilServer.getPlayers()){
 									setLevel(p, l);

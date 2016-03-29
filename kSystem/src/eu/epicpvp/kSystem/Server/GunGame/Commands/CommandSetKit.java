@@ -1,19 +1,15 @@
-package me.kingingo.kSystem.kServer.GunGame.Commands;
-
-import me.kingingo.kcore.Command.CommandHandler.Sender;
-import me.kingingo.kcore.Command.Commands.Events.AddKitEvent;
-import me.kingingo.kcore.Language.Language;
-import me.kingingo.kcore.Permission.kPermission;
-import me.kingingo.kcore.Util.TimeSpan;
-import me.kingingo.kcore.Util.UtilNumber;
-import me.kingingo.kcore.Util.UtilString;
-import me.kingingo.kcore.kConfig.kConfig;
+package eu.epicpvp.kSystem.Server.GunGame.Commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import eu.epicpvp.kcore.Command.CommandHandler.Sender;
+import eu.epicpvp.kcore.Command.Commands.Events.AddKitEvent;
+import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.kConfig.kConfig;
 
 public class CommandSetKit implements CommandExecutor{
 
@@ -24,7 +20,7 @@ public class CommandSetKit implements CommandExecutor{
 		this.config=config;
 	}
 	
-	@me.kingingo.kcore.Command.CommandHandler.Command(command = "setkit", sender = Sender.PLAYER)
+	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "setkit", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2,String[] args) {
 		player=(Player)sender;
 		

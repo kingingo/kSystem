@@ -1,55 +1,14 @@
-package me.kingingo.kSystem.kServer.GunGame;
+package eu.epicpvp.kSystem.Server.GunGame;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-
-import lombok.Getter;
-import me.kingingo.kSystem.kSystem;
-import me.kingingo.kcore.Disguise.DisguiseType;
-import me.kingingo.kcore.Disguise.disguises.DisguiseBase;
-import me.kingingo.kcore.Disguise.disguises.livings.DisguisePlayer;
-import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.GameType;
-import me.kingingo.kcore.Language.Language;
-import me.kingingo.kcore.Listener.kListener;
-import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
-import me.kingingo.kcore.Packet.Packets.PLAYER_VOTE;
-import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
-import me.kingingo.kcore.Packet.Packets.TWITTER_PLAYER_FOLLOW;
-import me.kingingo.kcore.Packet.Packets.WORLD_CHANGE_DATA;
-import me.kingingo.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
-import me.kingingo.kcore.StatsManager.Stats;
-import me.kingingo.kcore.StatsManager.Event.PlayerStatsChangeEvent;
-import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
-import me.kingingo.kcore.Update.UpdateType;
-import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.UpdateAsync.UpdateAsyncType;
-import me.kingingo.kcore.UpdateAsync.Event.UpdateAsyncEvent;
-import me.kingingo.kcore.UserDataConfig.Events.UserDataConfigLoadEvent;
-import me.kingingo.kcore.Util.TabTitle;
-import me.kingingo.kcore.Util.TimeSpan;
-import me.kingingo.kcore.Util.UtilEnt;
-import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilPlayer;
-import me.kingingo.kcore.Util.UtilScoreboard;
-import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Util.UtilWorldGuard;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.kListen.kRank;
-import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -67,16 +26,36 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
-public class kGunGameListener extends kListener{
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangeEvent;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Update.UpdateType;
+import eu.epicpvp.kcore.Update.Event.UpdateEvent;
+import eu.epicpvp.kcore.UserDataConfig.Events.UserDataConfigLoadEvent;
+import eu.epicpvp.kcore.Util.TabTitle;
+import eu.epicpvp.kcore.Util.TimeSpan;
+import eu.epicpvp.kcore.Util.UtilEvent;
+import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
+import eu.epicpvp.kcore.Util.UtilPlayer;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilWorldGuard;
+import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
+
+public class GunGameListener extends kListener{
 
 	@Getter
-	private kGunGame instance;
+	private GunGame instance;
 	private ArrayList<UUID> vote_list;
 	private HashMap<Player,Player> last_hit;
 	private HashMap<Player,Location> last_hit_loc;
@@ -86,7 +65,7 @@ public class kGunGameListener extends kListener{
 	private ArrayList<Player> kills_update;
 	private ArrayList<Player> deaths_update;
 	
-	public kGunGameListener(kGunGame instance) {
+	public GunGameListener(GunGame instance) {
 		super(instance.getInstance(), "kGunGameListener");
 		this.instance=instance;
 		this.last_hit=new HashMap<>();
@@ -115,42 +94,42 @@ public class kGunGameListener extends kListener{
 		}
 	}
 	
-	Player player;
-	@EventHandler
-	public void PacketReceive(PacketReceiveEvent ev){
-		if(ev.getPacket() instanceof WORLD_CHANGE_DATA){
-			WORLD_CHANGE_DATA packet = (WORLD_CHANGE_DATA)ev.getPacket();
-			UtilPlayer.setWorldChangeUUID(Bukkit.getWorld(packet.getWorldName()), packet.getOld_uuid(), packet.getNew_uuid());
-		}else if(ev.getPacket() instanceof PLAYER_VOTE){
-			PLAYER_VOTE vote = (PLAYER_VOTE)ev.getPacket();
-			
-			if(UtilPlayer.isOnline(vote.getPlayer())){
-				player=Bukkit.getPlayer(vote.getPlayer());
-				if(UtilServer.getDeliveryPet()!=null){
-					UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
-				}
-				getInstance().getKit().setLevel(player, player.getLevel()+2);
-				player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "VOTE_THX"));
-			}else{
-				vote_list.add(vote.getUuid());
-			}
-		}else if(ev.getPacket() instanceof TWITTER_PLAYER_FOLLOW){
-			TWITTER_PLAYER_FOLLOW tw = (TWITTER_PLAYER_FOLLOW)ev.getPacket();
-			
-			if(UtilPlayer.isOnline(tw.getPlayer())){
-				Player p = Bukkit.getPlayer(tw.getPlayer());
-				if(!tw.isFollow()){
-					getInstance().getInstance().getMysql().Update("DELETE FROM BG_TWITTER WHERE uuid='" + UtilPlayer.getRealUUID(p) + "'");
-					p.sendMessage(Language.getText(p,"PREFIX")+Language.getText(p, "TWITTER_FOLLOW_N"));
-					p.sendMessage(Language.getText(p,"PREFIX")+Language.getText(p, "TWITTER_REMOVE"));
-				}else{
-					UtilServer.getDeliveryPet().deliveryBlock(p, "§cTwitter Reward");
-					getInstance().getKit().setLevel(p, p.getLevel()+1);
-					p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "MONEY_RECEIVE_FROM", new String[]{"§bThe Delivery Jockey!","300"}));
-				}
-			}
-		}
-	}
+//	Player player;
+//	@EventHandler
+//	public void PacketReceive(PacketReceiveEvent ev){
+//		if(ev.getPacket() instanceof WORLD_CHANGE_DATA){
+//			WORLD_CHANGE_DATA packet = (WORLD_CHANGE_DATA)ev.getPacket();
+//			UtilPlayer.setWorldChangeUUID(Bukkit.getWorld(packet.getWorldName()), packet.getOld_uuid(), packet.getNew_uuid());
+//		}else if(ev.getPacket() instanceof PLAYER_VOTE){
+//			PLAYER_VOTE vote = (PLAYER_VOTE)ev.getPacket();
+//			
+//			if(UtilPlayer.isOnline(vote.getPlayer())){
+//				player=Bukkit.getPlayer(vote.getPlayer());
+//				if(UtilServer.getDeliveryPet()!=null){
+//					UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
+//				}
+//				getInstance().getKit().setLevel(player, player.getLevel()+2);
+//				player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "VOTE_THX"));
+//			}else{
+//				vote_list.add(vote.getUuid());
+//			}
+//		}else if(ev.getPacket() instanceof TWITTER_PLAYER_FOLLOW){
+//			TWITTER_PLAYER_FOLLOW tw = (TWITTER_PLAYER_FOLLOW)ev.getPacket();
+//			
+//			if(UtilPlayer.isOnline(tw.getPlayer())){
+//				Player p = Bukkit.getPlayer(tw.getPlayer());
+//				if(!tw.isFollow()){
+//					getInstance().getInstance().getMysql().Update("DELETE FROM BG_TWITTER WHERE uuid='" + UtilPlayer.getRealUUID(p) + "'");
+//					p.sendMessage(Language.getText(p,"PREFIX")+Language.getText(p, "TWITTER_FOLLOW_N"));
+//					p.sendMessage(Language.getText(p,"PREFIX")+Language.getText(p, "TWITTER_REMOVE"));
+//				}else{
+//					UtilServer.getDeliveryPet().deliveryBlock(p, "§cTwitter Reward");
+//					getInstance().getKit().setLevel(p, p.getLevel()+1);
+//					p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "MONEY_RECEIVE_FROM", new String[]{"§bThe Delivery Jockey!","300"}));
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler
 	public void PlayerArmorStandManipulate(PlayerArmorStandManipulateEvent ev){
@@ -181,14 +160,20 @@ public class kGunGameListener extends kListener{
 	
 	@EventHandler
 	public void loadedStats(PlayerStatsLoadedEvent ev){
-		if(vote_list.contains( UtilPlayer.getRealUUID(ev.getPlayer()) )){
-			 if(UtilServer.getDeliveryPet()!=null){
-				 UtilServer.getDeliveryPet().deliveryUSE(ev.getPlayer(), "§aVote for EpicPvP", true);
-			 }
-			 vote_list.remove(UtilPlayer.getRealUUID(ev.getPlayer()));
-			 getInstance().getKit().setLevel(player, player.getLevel()+1);
-			 ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "VOTE_THX"));
-		 }
+		if(UtilPlayer.isOnline(ev.getPlayername())){
+			Player player = Bukkit.getPlayer(ev.getPlayername());
+			
+			if(ev.getManager().getType() != GameType.Money){
+				if(vote_list.contains( UtilPlayer.getRealUUID(player) )){
+					 if(UtilServer.getDeliveryPet()!=null){
+						 UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
+					 }
+					 vote_list.remove(UtilPlayer.getRealUUID(player));
+					 getInstance().getKit().setLevel(player, player.getLevel()+1);
+					 player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "VOTE_THX"));
+				 }
+			}
+		}
 	}
 	
 	@EventHandler
@@ -204,8 +189,8 @@ public class kGunGameListener extends kListener{
 						UtilScoreboard.resetScore(player.getScoreboard(), 9, DisplaySlot.SIDEBAR);
 					}
 					
-					kills_score.put(player, "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, player)+" ");
-					UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, player)+" ", DisplaySlot.SIDEBAR,9);
+					kills_score.put(player, "§f"+getInstance().getStatsManager().getInt(player, StatsKey.KILLS)+" ");
+					UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(player, StatsKey.KILLS)+" ", DisplaySlot.SIDEBAR,9);
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -222,8 +207,8 @@ public class kGunGameListener extends kListener{
 						UtilScoreboard.resetScore(player.getScoreboard(), 6, DisplaySlot.SIDEBAR);
 					}
 					
-					deaths_score.put(player, "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, player)+" ");
-					UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, player)+" ", DisplaySlot.SIDEBAR, 6);
+					deaths_score.put(player, "§f"+getInstance().getStatsManager().getInt(player, StatsKey.DEATHS)+" ");
+					UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(player, StatsKey.DEATHS)+" ", DisplaySlot.SIDEBAR, 6);
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -234,12 +219,17 @@ public class kGunGameListener extends kListener{
 	
 	@EventHandler
 	public void statsChange(PlayerStatsChangeEvent ev){
-		if(ev.getPlayer().getScoreboard()==null)return;
-		if(ev.getPlayer().getScoreboard().getObjective(DisplaySlot.SIDEBAR)==null)return;
-		if(ev.getStats()==Stats.KILLS&&!kills_update.contains(ev.getPlayer())){
-			kills_update.add(ev.getPlayer());
-		}else if(ev.getStats()==Stats.DEATHS&&!deaths_update.contains(ev.getPlayer())){
-			deaths_update.add(ev.getPlayer());
+		if(UtilPlayer.isOnline(ev.getPlayername())){
+			Player player = Bukkit.getPlayer(ev.getPlayername());
+			if(ev.getManager().getType() != GameType.Money){
+				if(player.getScoreboard()==null)return;
+				if(player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)==null)return;
+				if(ev.getStats()==StatsKey.KILLS&&!kills_update.contains(player)){
+					kills_update.add(player);
+				}else if(ev.getStats()==StatsKey.DEATHS&&!deaths_update.contains(player)){
+					deaths_update.add(player);
+				}
+			}
 		}
 	}
 	
@@ -248,15 +238,15 @@ public class kGunGameListener extends kListener{
 		UtilScoreboard.addBoard(ev.getPlayer().getScoreboard(), DisplaySlot.SIDEBAR, "§f§lEPICPVP - GUNGAME");
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "    ", DisplaySlot.SIDEBAR, 11);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aKills:", DisplaySlot.SIDEBAR, 10);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.KILLS, ev.getPlayer())+" ", DisplaySlot.SIDEBAR, 9);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.KILLS)+" ", DisplaySlot.SIDEBAR, 9);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "   ", DisplaySlot.SIDEBAR, 8);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aDeaths:", DisplaySlot.SIDEBAR, 7);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.DEATHS, ev.getPlayer()), DisplaySlot.SIDEBAR, 6);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.DEATHS), DisplaySlot.SIDEBAR, 6);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "  ", DisplaySlot.SIDEBAR, 5);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aHöchstes Level:", DisplaySlot.SIDEBAR, 4);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(Stats.LEVEL, ev.getPlayer())+"  ", DisplaySlot.SIDEBAR, 3);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aHÃ¶chstes Level:", DisplaySlot.SIDEBAR, 4);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.LEVEL)+"  ", DisplaySlot.SIDEBAR, 3);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), " ", DisplaySlot.SIDEBAR, 2);
-		UtilScoreboard.addLiveBoard(ev.getPlayer().getScoreboard(), ChatColor.RED+""+ChatColor.BOLD+"❤");
+		UtilScoreboard.addLiveBoard(ev.getPlayer().getScoreboard(), ChatColor.RED+""+ChatColor.BOLD+"�¤");
 		getInstance().getKit().setLevel(ev.getPlayer(), ev.getPlayer().getLevel());
 	}
 	
@@ -279,7 +269,7 @@ public class kGunGameListener extends kListener{
 		
 		getInstance().getUserData().getConfig(ev.getPlayer()).set("lastLogin", System.currentTimeMillis());
 		ev.setQuitMessage(null);
-		getInstance().getStatsManager().SaveAllPlayerData(ev.getPlayer());
+		getInstance().getStatsManager().save(ev.getPlayer());
 	}
 	
 	@EventHandler
@@ -290,22 +280,22 @@ public class kGunGameListener extends kListener{
 			ev.getPlayer().showPlayer(player);
 		}
 		ev.getPlayer().setGameMode(GameMode.ADVENTURE);
-		getInstance().getStatsManager().loadPlayerStats(ev.getPlayer());
+		getInstance().getStatsManager().loadPlayer(ev.getPlayer());
 		ev.setJoinMessage(null);
 		ev.getPlayer().teleport(getInstance().getSpawn());
 		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEpicPvP§8.§eeu §8| §aGunGame-Server", "§aTeamSpeak: §7ts.EpicPvP.eu §8| §eWebsite: §7EpicPvP.eu");
 	}
 	
-	SERVER_STATUS s;
-	@EventHandler
-	public void send(UpdateAsyncEvent ev){
-		if(ev.getType()==UpdateAsyncType.SEC_4){
-			if(s==null)s= new SERVER_STATUS(GameState.LobbyPhase, UtilServer.getPlayers().size(), Bukkit.getMaxPlayers(),"MAP",GameType.GUNGAME,getInstance().getInstance().getConfig().getString("Config.ID"), false);
-			s.setOnline(UtilServer.getPlayers().size());
-			s.setMap(getInstance().getMap().getLastMap());
-			getInstance().getInstance().getPacketManager().SendPacket("hub",s);
-		}
-	}
+//	Packet s;
+//	@EventHandler
+//	public void send(UpdateAsyncEvent ev){
+//		if(ev.getType()==UpdateAsyncType.SEC_4){
+//			if(s==null)s= new SERVER_STATUS(GameState.LobbyPhase, UtilServer.getPlayers().size(), Bukkit.getMaxPlayers(),"MAP",GameType.GUNGAME,getInstance().getInstance().getConfig().getString("Config.ID"), false);
+//			s.setOnline(UtilServer.getPlayers().size());
+//			s.setMap(getInstance().getMap().getLastMap());
+//			getInstance().getInstance().getPacketManager().SendPacket("hub",s);
+//		}
+//	}
 	
 	@EventHandler
 	public void water(UpdateEvent ev){
@@ -321,7 +311,7 @@ public class kGunGameListener extends kListener{
 								player.sendMessage(Language.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(player, "HEART",new String[]{last_hit.get(player).getName(),UtilPlayer.getHealthBar(last_hit.get(player))}));
 
 								UtilPlayer.addPotionEffect(last_hit.get(player), PotionEffectType.REGENERATION, 3, 4);
-								getInstance().getStatsManager().addInt(last_hit.get(player), 1, Stats.KILLS);
+								getInstance().getStatsManager().add(last_hit.get(player), StatsKey.KILLS,1);
 								getInstance().getKit().setLevel(last_hit.get(player), last_hit.get(player).getLevel()+1);
 								last_hit.get(player).playSound(last_hit.get(player).getLocation(), Sound.LEVEL_UP,1f, 1f);
 							}
@@ -329,7 +319,7 @@ public class kGunGameListener extends kListener{
 							last_hit.remove(player);
 						}
 
-						getInstance().getStatsManager().addInt(player, 1, Stats.DEATHS);
+						getInstance().getStatsManager().add(last_hit.get(player), StatsKey.DEATHS,1);
 						player.teleport(getInstance().getSpawn());
 						player.setHealth(player.getMaxHealth());
 						getInstance().getKit().death(player);
@@ -399,7 +389,7 @@ public class kGunGameListener extends kListener{
 			ev.setKeepLevel(true);
 			getInstance().getKit().death(v);
 			
-			getInstance().getStatsManager().addInt(v, 1, Stats.DEATHS);
+			getInstance().getStatsManager().add(v, StatsKey.DEATHS,1);
 			last_hit_loc.remove(v);
 			last_hit.remove(v);
 			UtilPlayer.RespawnNow(v, getInstance().getInstance());
@@ -412,7 +402,7 @@ public class kGunGameListener extends kListener{
 				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v, "HEART",new String[]{a.getName(),UtilPlayer.getHealthBar(a)}));
 				getInstance().getKit().setLevel(a, a.getLevel()+1);
 				UtilPlayer.addPotionEffect(a, PotionEffectType.REGENERATION, 3, 4);
-				getInstance().getStatsManager().addInt(a, 1, Stats.KILLS);
+				getInstance().getStatsManager().add(a, StatsKey.KILLS,1);
 			}else{
 				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"DEATH", v.getName()));
 			}

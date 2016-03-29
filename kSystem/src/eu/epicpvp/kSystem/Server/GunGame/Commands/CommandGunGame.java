@@ -1,43 +1,27 @@
-package me.kingingo.kSystem.kServer.GunGame.Commands;
-
-import java.io.File;
-import java.util.HashMap;
-
-import lombok.Getter;
-import me.kingingo.kSystem.kServer.kServer;
-import me.kingingo.kSystem.kServer.GunGame.kGunGame;
-import me.kingingo.kcore.Command.CommandHandler;
-import me.kingingo.kcore.Command.CommandHandler.Sender;
-import me.kingingo.kcore.Command.Commands.CommandDelKit;
-import me.kingingo.kcore.Command.Commands.Events.AddKitEvent;
-import me.kingingo.kcore.Command.Commands.Events.DeleteKitEvent;
-import me.kingingo.kcore.Language.Language;
-import me.kingingo.kcore.StatsManager.Stats;
-import me.kingingo.kcore.Util.UtilNumber;
-import me.kingingo.kcore.Util.UtilPlayer;
-import me.kingingo.kcore.Util.UtilScoreboard;
-import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.kConfig.kConfig;
+package eu.epicpvp.kSystem.Server.GunGame.Commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.DisplaySlot;
+
+import eu.epicpvp.kSystem.Server.GunGame.GunGame;
+import eu.epicpvp.kcore.Command.CommandHandler.Sender;
+import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Util.UtilPlayer;
+import eu.epicpvp.kcore.Util.UtilServer;
 
 public class CommandGunGame implements CommandExecutor{
 
 	private Player player;
-	private kGunGame gungame;
+	private GunGame gungame;
 	
-	public CommandGunGame(kGunGame gungame){
+	public CommandGunGame(GunGame gungame){
 		this.gungame=gungame;
 	}
 	
-	@me.kingingo.kcore.Command.CommandHandler.Command(command = "gungame",alias={"gg"}, sender = Sender.PLAYER)
+	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "gungame",alias={"gg"}, sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2,String[] args) {
 		player=(Player)sender;
 		
@@ -64,7 +48,7 @@ public class CommandGunGame implements CommandExecutor{
 						if(UtilPlayer.isOnline(args[1])){
 							target=Bukkit.getPlayer(args[1]);
 						}else{
-							target=UtilPlayer.loadPlayer(UtilPlayer.getUUID(args[1], gungame.getStatsManager().getMysql()));
+							target=UtilPlayer.loadPlayer(UtilPlayer.getUUID(args[1], gungame.getInstance().getMysql()));
 						}
 						
 						if(target!=null){

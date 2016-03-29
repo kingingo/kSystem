@@ -1,4 +1,4 @@
-package me.kingingo.kSystem.kServer.GunGame;
+package eu.epicpvp.kSystem.Server.GunGame;
 
 import java.util.HashMap;
 
@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.kingingo.kSystem.kServer.GunGame.Events.PlayerGunGameLevelUpEvent;
-import me.kingingo.kcore.Listener.kListener;
-import me.kingingo.kcore.Util.TimeSpan;
+import eu.epicpvp.kSystem.Server.GunGame.Events.PlayerGunGameLevelUpEvent;
+import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Util.TimeSpan;
 
 public class AntiKillFarm extends kListener{
 

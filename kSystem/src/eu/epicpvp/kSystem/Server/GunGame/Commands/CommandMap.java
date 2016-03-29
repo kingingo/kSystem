@@ -1,34 +1,13 @@
-package me.kingingo.kSystem.kServer.GunGame.Commands;
+package eu.epicpvp.kSystem.Server.GunGame.Commands;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import lombok.Getter;
-import lombok.Setter;
-import me.kingingo.kSystem.kServer.GunGame.kGunGame;
-import me.kingingo.kcore.Command.CommandHandler.Sender;
-import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
-import me.kingingo.kcore.Hologram.nametags.NameTagType;
-import me.kingingo.kcore.Language.Language;
-import me.kingingo.kcore.Listener.kListener;
-import me.kingingo.kcore.Packet.Events.PacketSendEvent;
-import me.kingingo.kcore.PacketAPI.packetlistener.event.PacketListenerSendEvent;
-import me.kingingo.kcore.Update.UpdateType;
-import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilScoreboard;
-import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.kConfig.kConfig;
-import me.kingingo.kcore.kListen.kRank;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,17 +17,32 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
+
+import eu.epicpvp.kSystem.Server.GunGame.GunGame;
+import eu.epicpvp.kcore.Command.CommandHandler.Sender;
+import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
+import eu.epicpvp.kcore.Hologram.nametags.NameTagType;
+import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Update.UpdateType;
+import eu.epicpvp.kcore.Update.Event.UpdateEvent;
+import eu.epicpvp.kcore.Util.UtilItem;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilTime;
+import eu.epicpvp.kcore.kConfig.kConfig;
+import eu.epicpvp.kcore.kListen.kSort;
+import lombok.Getter;
+import lombok.Setter;
 
 public class CommandMap extends kListener implements CommandExecutor{
 	@Getter
 	private kConfig config;
 	@Getter
-	private kGunGame instance;
+	private GunGame instance;
 	@Getter
 	@Setter
 	private int counter=0;
@@ -63,7 +57,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 	private int time=2;
 	@Getter
 	private HashMap<String,Location> maps;
-	private ArrayList<kRank> ranking;
+	private ArrayList<kSort> ranking;
 
 	@Getter
 	private ArmorStand npc1;
@@ -80,7 +74,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 	private Player player3;
 	private NameTagMessage ntm3;
 	
-	public CommandMap(kGunGame instance){
+	public CommandMap(GunGame instance){
 		super(instance.getInstance(),"CommandMap");
 
 		this.instance=instance;
@@ -120,13 +114,13 @@ public class CommandMap extends kListener implements CommandExecutor{
 	
 	public void check(){
 		ranking.clear();
-		for(Player player : UtilServer.getPlayers())ranking.add(new kRank(player.getName(),player.getLevel()));
+		for(Player player : UtilServer.getPlayers())ranking.add(new kSort(player.getName(),player.getLevel()));
 
-		Collections.sort(ranking,kRank.DESCENDING);
+		Collections.sort(ranking,kSort.DESCENDING);
 		clear();
 		if(!ranking.isEmpty()){
 			if(ranking.size()>=1){
-				this.player1=Bukkit.getPlayer(ranking.get(0).getPlayer());
+				this.player1=Bukkit.getPlayer(ranking.get(0).getName());
 				if(npc1==null||npc1.isDead()){
 					getNPCL1().getChunk().load();
 					npc1=(ArmorStand)getNPCL1().getWorld().spawnEntity(getNPCL1(), EntityType.ARMOR_STAND);
@@ -150,7 +144,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 				ntm1.send();
 				
 				if(ranking.size()>=2){
-					this.player2=Bukkit.getPlayer(ranking.get(1).getPlayer());
+					this.player2=Bukkit.getPlayer(ranking.get(1).getName());
 					if(npc2==null||npc2.isDead()){
 						npc2=(ArmorStand)getNPCL2().getWorld().spawnEntity(getNPCL2(), EntityType.ARMOR_STAND);
 						npc2.setArms(true);
@@ -173,7 +167,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 					ntm2.send();
 					
 					if(ranking.size()>=3){
-						this.player3=Bukkit.getPlayer(ranking.get(2).getPlayer());
+						this.player3=Bukkit.getPlayer(ranking.get(2).getName());
 						
 						if(npc3==null||npc3.isDead()){
 							npc3=(ArmorStand)getNPCL3().getWorld().spawnEntity(getNPCL3(), EntityType.ARMOR_STAND);
@@ -318,7 +312,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 		}
 	}
 	
-	@me.kingingo.kcore.Command.CommandHandler.Command(command = "map", sender = Sender.PLAYER)
+	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "map", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2,String[] args) {
 		Player player=(Player)sender;
 		
