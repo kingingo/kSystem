@@ -3,7 +3,19 @@
   <groupId>eu.epicpvp</groupId>
   <artifactId>core-ksystem</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  	<parent>
+	<distributionManagement>
+        <repository>
+            <id>epicpvp-releases</id>
+            <name>epicpvp-artifactory-releases</name>
+            <url>http://149.202.150.185:8081/artifactory/epicpvp-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>epicpvp-snapshots</id>
+            <name>epicpvp-artifactory-snapshots</name>
+            <url>http://149.202.150.185:8081/artifactory/epicpvp-snapshots/</url>
+        </snapshotRepository>
+	</distributionManagement>
+	<parent>
 		<groupId>eu.epicpvp</groupId>
 		<artifactId>core-parent</artifactId>
 		<version>1.0</version>
@@ -33,6 +45,10 @@
 		</plugins>
 	</build>
 	<repositories>
+	 	<repository>
+            <id>epicpvp-all</id>
+            <url>http://149.202.150.185:8081/artifactory/epicpvp-all/</url>
+        </repository>
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -47,11 +63,6 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>kCore</groupId>
-			<artifactId>kCore</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>eu.epicpvp</groupId>
 			<artifactId>ViaVersion</artifactId>
@@ -94,11 +105,6 @@
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldguard</artifactId>
 			<version>6.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>DatenClient</groupId>
-			<artifactId>DatenClient</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
