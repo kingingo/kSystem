@@ -36,12 +36,12 @@ public class CommandGunGame implements CommandExecutor{
 						}
 						
 						gungame.getInstance().getConfig().set("LevelResetAll", System.currentTimeMillis());
-						player.sendMessage(Language.getText(player, "PREFIX")+"§cDer Levelstand von allen Spielern wurde resetet!");
+						player.sendMessage(Language.getText(player, "PREFIX")+"Â§cDer Levelstand von allen Spielern wurde resetet!");
 					}else if(args[1].equalsIgnoreCase("online")){
 						for(Player player : UtilServer.getPlayers()){
 							gungame.getKit().setLevel(player, 1);
 						}
-						player.sendMessage(Language.getText(player, "PREFIX")+"§cDer Levelstand von allen Online Spielern wurde resetet!");
+						player.sendMessage(Language.getText(player, "PREFIX")+"Â§cDer Levelstand von allen Online Spielern wurde resetet!");
 					}else{
 						Player target = null;
 						
@@ -53,9 +53,9 @@ public class CommandGunGame implements CommandExecutor{
 						
 						if(target!=null){
 							gungame.getKit().setLevel(target, 1);
-							player.sendMessage(Language.getText(player, "PREFIX")+"§cDie Level von diesem Spieler wurden resetet!");
+							player.sendMessage(Language.getText(player, "PREFIX")+"Â§cDie Level von diesem Spieler wurden resetet!");
 						}else{
-							player.sendMessage(Language.getText(player, "PREFIX")+"§cDieser Spieler wurde nicht gefunden!");
+							player.sendMessage(Language.getText(player, "PREFIX")+"Â§cDieser Spieler wurde nicht gefunden!");
 						}
 					}
 				}

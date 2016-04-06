@@ -73,7 +73,7 @@ public class CommandKit implements CommandExecutor{
 		if(player.getScoreboard()!=null&&player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)!=null&&getInstance().getStatsManager().getInt(player, StatsKey.LEVEL)<level){
 			getInstance().getStatsManager().set(player, StatsKey.LEVEL,level);
 			UtilScoreboard.resetScore(player.getScoreboard(),3, DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(player.getScoreboard(), "§f"+getInstance().getStatsManager().getInt(player, StatsKey.LEVEL)+"  ", DisplaySlot.SIDEBAR, 3);
+			UtilScoreboard.setScore(player.getScoreboard(), "Â§f"+getInstance().getStatsManager().getInt(player, StatsKey.LEVEL)+"  ", DisplaySlot.SIDEBAR, 3);
 		}
 		
 		Bukkit.getPluginManager().callEvent(new PlayerGunGameLevelUpEvent(player, level));

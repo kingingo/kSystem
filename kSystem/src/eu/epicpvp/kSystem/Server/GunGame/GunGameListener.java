@@ -246,7 +246,7 @@ public class GunGameListener extends kListener{
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aHÃ¶chstes Level:", DisplaySlot.SIDEBAR, 4);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.LEVEL)+"  ", DisplaySlot.SIDEBAR, 3);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), " ", DisplaySlot.SIDEBAR, 2);
-		UtilScoreboard.addLiveBoard(ev.getPlayer().getScoreboard(), ChatColor.RED+""+ChatColor.BOLD+"�¤");
+		UtilScoreboard.addLiveBoard(ev.getPlayer().getScoreboard(), ChatColor.RED+""+ChatColor.BOLD+"§¤");
 		getInstance().getKit().setLevel(ev.getPlayer(), ev.getPlayer().getLevel());
 	}
 	

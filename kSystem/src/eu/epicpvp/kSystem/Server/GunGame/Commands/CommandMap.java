@@ -134,12 +134,12 @@ public class CommandMap extends kListener implements CommandExecutor{
 				}
 				
 				if(ntm1==null){
-					ntm1=new NameTagMessage(NameTagType.PACKET, getNPCL1().clone().add(0, 2.3, 0), new String[]{"§c§lPlatz 1"});
+					ntm1=new NameTagMessage(NameTagType.PACKET, getNPCL1().clone().add(0, 2.3, 0), new String[]{"Â§cÂ§lPlatz 1"});
 				}
 				
-				if(npc1.getCustomName()==null || !npc1.getCustomName().equalsIgnoreCase("§e§l"+player1.getName()+" §7|§7 Lvl. §a"+player1.getLevel())){
+				if(npc1.getCustomName()==null || !npc1.getCustomName().equalsIgnoreCase("Â§eÂ§l"+player1.getName()+" Â§7|Â§7 Lvl. Â§a"+player1.getLevel())){
 					npc1.setHelmet(UtilItem.Head(player1.getName()));
-					npc1.setCustomName("§e§l"+player1.getName()+" §7|§7 Lvl. §a"+player1.getLevel());
+					npc1.setCustomName("Â§eÂ§l"+player1.getName()+" Â§7|Â§7 Lvl. Â§a"+player1.getLevel());
 				}
 				ntm1.send();
 				
@@ -157,12 +157,12 @@ public class CommandMap extends kListener implements CommandExecutor{
 					}
 					
 					if(ntm2==null){
-						ntm2=new NameTagMessage(NameTagType.PACKET, getNPCL2().clone().add(0, 2.3, 0), new String[]{"§c§lPlatz 2"});
+						ntm2=new NameTagMessage(NameTagType.PACKET, getNPCL2().clone().add(0, 2.3, 0), new String[]{"Â§cÂ§lPlatz 2"});
 					}
 					
-					if(npc2.getCustomName()==null || !npc2.getCustomName().equalsIgnoreCase("§e§l"+player2.getName()+" §7|§7 Lvl. §a"+player2.getLevel())){
+					if(npc2.getCustomName()==null || !npc2.getCustomName().equalsIgnoreCase("Â§eÂ§l"+player2.getName()+" Â§7|Â§7 Lvl. Â§a"+player2.getLevel())){
 						npc2.setHelmet(UtilItem.Head(player2.getName()));
-						npc2.setCustomName("§e§l"+player2.getName()+" §7|§7 Lvl. §a"+player2.getLevel());
+						npc2.setCustomName("Â§eÂ§l"+player2.getName()+" Â§7|Â§7 Lvl. Â§a"+player2.getLevel());
 					}
 					ntm2.send();
 					
@@ -181,12 +181,12 @@ public class CommandMap extends kListener implements CommandExecutor{
 						}
 						
 						if(ntm3==null){
-							ntm3=new NameTagMessage(NameTagType.PACKET, getNPCL3().clone().add(0, 2.3, 0), new String[]{"§c§lPlatz 3"});
+							ntm3=new NameTagMessage(NameTagType.PACKET, getNPCL3().clone().add(0, 2.3, 0), new String[]{"Â§cÂ§lPlatz 3"});
 						}
 						
-						if(npc3.getCustomName()==null || !npc3.getCustomName().equalsIgnoreCase("§e§l"+player3.getName()+" §7|§7 Lvl. §a"+player3.getLevel())){
+						if(npc3.getCustomName()==null || !npc3.getCustomName().equalsIgnoreCase("Â§eÂ§l"+player3.getName()+" Â§7|Â§7 Lvl. Â§a"+player3.getLevel())){
 							npc3.setHelmet(UtilItem.Head(player3.getName()));
-							npc3.setCustomName("§e§l"+player3.getName()+" §7|§7 Lvl. §a"+player3.getLevel());
+							npc3.setCustomName("Â§eÂ§l"+player3.getName()+" Â§7|Â§7 Lvl. Â§a"+player3.getLevel());
 						}
 						ntm3.send();
 					}
@@ -243,9 +243,9 @@ public class CommandMap extends kListener implements CommandExecutor{
 						if(lastbtime==null){
 							UtilScoreboard.resetScore(player.getScoreboard(), 1, DisplaySlot.SIDEBAR);
 						}else{
-							UtilScoreboard.resetScore(player.getScoreboard(), "§6Map wechseln in §f"+lastbtime, DisplaySlot.SIDEBAR);
+							UtilScoreboard.resetScore(player.getScoreboard(), "Â§6Map wechseln in Â§f"+lastbtime, DisplaySlot.SIDEBAR);
 						}
-						UtilScoreboard.setScore(player.getScoreboard(), "§6Map wechseln in §f"+btime, DisplaySlot.SIDEBAR, 1);
+						UtilScoreboard.setScore(player.getScoreboard(), "Â§6Map wechseln in Â§f"+btime, DisplaySlot.SIDEBAR, 1);
 					}
 				}
 			}
@@ -318,11 +318,11 @@ public class CommandMap extends kListener implements CommandExecutor{
 		
 		if(player.isOp()){
 			if(args.length==0){
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map set [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map setgems [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map setdeliverypet [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map next [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map settime [Time]");
+				player.sendMessage(Language.getText(player, "PREFIX")+"Â§7/map set [Name]");
+				player.sendMessage(Language.getText(player, "PREFIX")+"Â§7/map setgems [Name]");
+				player.sendMessage(Language.getText(player, "PREFIX")+"Â§7/map setdeliverypet [Name]");
+				player.sendMessage(Language.getText(player, "PREFIX")+"Â§7/map next [Name]");
+				player.sendMessage(Language.getText(player, "PREFIX")+"Â§7/map settime [Time]");
 			}else{
 				if(args[0].equalsIgnoreCase("set")){
 					getMaps().put(args[1].toLowerCase(), player.getLocation());
@@ -352,14 +352,14 @@ public class CommandMap extends kListener implements CommandExecutor{
 				}else if(args[0].equalsIgnoreCase("next")){
 					if(getMaps().containsKey(args[1].toLowerCase())){
 						this.nextMap=args[1].toLowerCase();
-						player.sendMessage(Language.getText(player, "PREFIX")+"§aDie nächste Map wird §7"+this.nextMap+"§a sein!");
+						player.sendMessage(Language.getText(player, "PREFIX")+"Â§aDie nÂ§chste Map wird Â§7"+this.nextMap+"Â§a sein!");
 					}
 				}else if(args[0].equalsIgnoreCase("settime")){
 					try{
 						int time = Integer.valueOf(args[1]);
 						
 						setTime(time);
-						player.sendMessage(Language.getText(player, "PREFIX")+"§aDie Zeit wurd auf §e"+getTime()+"§a geändert");
+						player.sendMessage(Language.getText(player, "PREFIX")+"Â§aDie Zeit wurd auf Â§e"+getTime()+"Â§a geÂ§ndert");
 					}catch(NumberFormatException e){
 						player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "NO_INTEGER",args[1]));
 					}

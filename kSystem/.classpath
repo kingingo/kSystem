@@ -11,10 +11,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Dev/spigot.jar"/>
-	<classpathentry kind="lib" path="C:/Dev/lombok.jar"/>
-	<classpathentry kind="lib" path="C:/Dev/kCore.jar"/>
-	<classpathentry kind="lib" path="C:/Dev/WorldGuard.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

@@ -15,7 +15,7 @@
             <url>http://149.202.150.185:8081/artifactory/epicpvp-snapshots/</url>
         </snapshotRepository>
 	</distributionManagement>
-	<parent>
+  	<parent>
 		<groupId>eu.epicpvp</groupId>
 		<artifactId>core-parent</artifactId>
 		<version>1.0</version>
@@ -63,6 +63,11 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>eu.epicpvp</groupId>
+			<artifactId>core-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>eu.epicpvp</groupId>
 			<artifactId>ViaVersion</artifactId>
