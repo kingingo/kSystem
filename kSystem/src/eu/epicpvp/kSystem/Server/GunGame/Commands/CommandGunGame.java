@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
 
@@ -36,26 +36,26 @@ public class CommandGunGame implements CommandExecutor{
 						}
 						
 						gungame.getInstance().getConfig().set("LevelResetAll", System.currentTimeMillis());
-						player.sendMessage(Language.getText(player, "PREFIX")+"§cDer Levelstand von allen Spielern wurde resetet!");
+						player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§cDer Levelstand von allen Spielern wurde resetet!");
 					}else if(args[1].equalsIgnoreCase("online")){
 						for(Player player : UtilServer.getPlayers()){
 							gungame.getKit().setLevel(player, 1);
 						}
-						player.sendMessage(Language.getText(player, "PREFIX")+"§cDer Levelstand von allen Online Spielern wurde resetet!");
+						player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§cDer Levelstand von allen Online Spielern wurde resetet!");
 					}else{
 						Player target = null;
 						
 						if(UtilPlayer.isOnline(args[1])){
 							target=Bukkit.getPlayer(args[1]);
 						}else{
-							target=UtilPlayer.loadPlayer(UtilPlayer.getUUID(args[1], gungame.getInstance().getMysql()));
+							target=UtilPlayer.loadPlayer(args[1]);
 						}
 						
 						if(target!=null){
 							gungame.getKit().setLevel(target, 1);
-							player.sendMessage(Language.getText(player, "PREFIX")+"§cDie Level von diesem Spieler wurden resetet!");
+							player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§cDie Level von diesem Spieler wurden resetet!");
 						}else{
-							player.sendMessage(Language.getText(player, "PREFIX")+"§cDieser Spieler wurde nicht gefunden!");
+							player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§cDieser Spieler wurde nicht gefunden!");
 						}
 					}
 				}

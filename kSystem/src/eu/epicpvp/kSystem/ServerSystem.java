@@ -7,9 +7,9 @@ import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
@@ -27,10 +27,9 @@ public class ServerSystem extends JavaPlugin{
 	
 	public void onEnable(){
 		loadConfig();
+		this.client = UtilServer.createClient(this,ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server")+getConfig().getString("Config.ID"));
 		this.mysql=UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 		this.updater=UtilServer.createUpdater(this);
-		this.client = UtilServer.createClient(this,ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server")+getConfig().getString("Config.ID"));
-		Language.load(getMysql());
 		new ListenerCMD(this);
 		
 		switch(getConfig().getString("Config.Server").toLowerCase()){

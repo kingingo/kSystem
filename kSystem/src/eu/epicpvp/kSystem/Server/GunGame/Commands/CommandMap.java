@@ -25,8 +25,8 @@ import eu.epicpvp.kSystem.Server.GunGame.GunGame;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagType;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
@@ -318,55 +318,55 @@ public class CommandMap extends kListener implements CommandExecutor{
 		
 		if(player.isOp()){
 			if(args.length==0){
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map set [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map setgems [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map setdeliverypet [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map next [Name]");
-				player.sendMessage(Language.getText(player, "PREFIX")+"§7/map settime [Time]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§7/map set [Name]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§7/map setgems [Name]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§7/map setdeliverypet [Name]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§7/map next [Name]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§7/map settime [Time]");
 			}else{
 				if(args[0].equalsIgnoreCase("set")){
 					getMaps().put(args[1].toLowerCase(), player.getLocation());
 					config.setLocation("maps."+args[1].toLowerCase()+".Spawn", player.getLocation());
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+"Die Map wurde gespeichert");
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Die Map wurde gespeichert");
 				}else if(args[0].equalsIgnoreCase("setgems")){
 					config.setLocation("maps."+args[1].toLowerCase()+".GemShop", player.getLocation());
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+"Die Map wurde gespeichert");
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Die Map wurde gespeichert");
 				}else if(args[0].equalsIgnoreCase("npc1")){
 					config.setLocation("maps."+args[1].toLowerCase()+".NPC1", player.getLocation());
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+"Die Map wurde gespeichert");
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Die Map wurde gespeichert");
 				}else if(args[0].equalsIgnoreCase("npc2")){
 					config.setLocation("maps."+args[1].toLowerCase()+".NPC2", player.getLocation());
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+"Die Map wurde gespeichert");
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Die Map wurde gespeichert");
 				}else if(args[0].equalsIgnoreCase("npc3")){
 					config.setLocation("maps."+args[1].toLowerCase()+".NPC3", player.getLocation());
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+"Die Map wurde gespeichert");
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Die Map wurde gespeichert");
 				}else if(args[0].equalsIgnoreCase("setdeliverypet")){
 					config.setLocation("maps."+args[1].toLowerCase()+".DeliveryPet", player.getLocation());
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+"Die Map wurde gespeichert");
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Die Map wurde gespeichert");
 				}else if(args[0].equalsIgnoreCase("next")){
 					if(getMaps().containsKey(args[1].toLowerCase())){
 						this.nextMap=args[1].toLowerCase();
-						player.sendMessage(Language.getText(player, "PREFIX")+"§aDie n§chste Map wird §7"+this.nextMap+"§a sein!");
+						player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§aDie n§chste Map wird §7"+this.nextMap+"§a sein!");
 					}
 				}else if(args[0].equalsIgnoreCase("settime")){
 					try{
 						int time = Integer.valueOf(args[1]);
 						
 						setTime(time);
-						player.sendMessage(Language.getText(player, "PREFIX")+"§aDie Zeit wurd auf §e"+getTime()+"§a ge§ndert");
+						player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"§aDie Zeit wurd auf §e"+getTime()+"§a ge§ndert");
 					}catch(NumberFormatException e){
-						player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "NO_INTEGER",args[1]));
+						player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "NO_INTEGER",args[1]));
 					}
 				}else if(args[0].equalsIgnoreCase("list")){
 					String maps ="";
 					for(String map : getMaps().keySet())maps+=map;
-					player.sendMessage(Language.getText(player, "PREFIX")+maps);
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+maps);
 				}
 			}
 		}

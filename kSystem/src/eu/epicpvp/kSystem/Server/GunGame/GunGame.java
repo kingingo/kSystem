@@ -19,8 +19,8 @@ import eu.epicpvp.kcore.DeliveryPet.DeliveryObject;
 import eu.epicpvp.kcore.DeliveryPet.DeliveryPet;
 import eu.epicpvp.kcore.GemsShop.GemsShop;
 import eu.epicpvp.kcore.Inventory.Item.Click;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.TimeSpan;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilInv;
@@ -64,11 +64,11 @@ public class GunGame extends Server{
 					@Override
 					public void onClick(Player p, ActionType a,Object obj) {
 						p.closeInventory();
-						p.sendMessage(Language.getText(p,"PREFIX")+"§7-----------------------------------------");
-						p.sendMessage(Language.getText(p,"PREFIX")+" ");
-						p.sendMessage(Language.getText(p,"PREFIX")+"Vote Link:§a http://goo.gl/wxdAj4");
-						p.sendMessage(Language.getText(p,"PREFIX")+" ");
-						p.sendMessage(Language.getText(p,"PREFIX")+"§7-----------------------------------------");
+						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"§7-----------------------------------------");
+						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+" ");
+						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"Vote Link:§a http://goo.gl/wxdAj4");
+						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+" ");
+						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"§7-----------------------------------------");
 					}
 					
 				},-1),

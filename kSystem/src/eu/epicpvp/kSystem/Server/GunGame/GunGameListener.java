@@ -33,11 +33,11 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangeEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.UserDataConfig.Events.UserDataConfigLoadEvent;
@@ -158,23 +158,23 @@ public class GunGameListener extends kListener{
 		}
 	}
 	
-	@EventHandler
-	public void loadedStats(PlayerStatsLoadedEvent ev){
-		if(UtilPlayer.isOnline(ev.getPlayername())){
-			Player player = Bukkit.getPlayer(ev.getPlayername());
-			
-			if(ev.getManager().getType() != GameType.Money){
-				if(vote_list.contains( UtilPlayer.getRealUUID(player) )){
-					 if(UtilServer.getDeliveryPet()!=null){
-						 UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
-					 }
-					 vote_list.remove(UtilPlayer.getRealUUID(player));
-					 getInstance().getKit().setLevel(player, player.getLevel()+1);
-					 player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "VOTE_THX"));
-				 }
-			}
-		}
-	}
+//	@EventHandler
+//	public void loadedStats(PlayerStatsLoadedEvent ev){
+//		if(UtilPlayer.isOnline(ev.getPlayerId())){
+//			Player player = UtilPlayer.searchExact(ev.getPlayerId());
+//			
+//			if(ev.getManager().getType() != GameType.Money){
+//				if(vote_list.contains( UtilPlayer.getRealUUID(player) )){
+//					 if(UtilServer.getDeliveryPet()!=null){
+//						 UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
+//					 }
+//					 vote_list.remove(UtilPlayer.getRealUUID(player));
+//					 getInstance().getKit().setLevel(player, player.getLevel()+1);
+//					 player.sendMessage(TranslationManager.getText(player, "PREFIX")+TranslationManager.getText(player, "VOTE_THX"));
+//				 }
+//			}
+//		}
+//	}
 	
 	@EventHandler
 	public void statsUpdate(UpdateEvent ev){
@@ -219,8 +219,8 @@ public class GunGameListener extends kListener{
 	
 	@EventHandler
 	public void statsChange(PlayerStatsChangeEvent ev){
-		if(UtilPlayer.isOnline(ev.getPlayername())){
-			Player player = Bukkit.getPlayer(ev.getPlayername());
+		if(UtilPlayer.isOnline(ev.getPlayerId())){
+			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			if(ev.getManager().getType() != GameType.Money){
 				if(player.getScoreboard()==null)return;
 				if(player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)==null)return;
@@ -306,9 +306,9 @@ public class GunGameListener extends kListener{
 					if(player.getLocation().getBlock().getType()==Material.STATIONARY_WATER){
 						if(last_hit.containsKey(player)&&last_hit.get(player).getScoreboard()!=null&&player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)!=null){
 							if(UtilWorldGuard.RegionFlag(last_hit_loc.get(player), DefaultFlag.PVP)){
-								last_hit.get(player).sendMessage(Language.getText(last_hit.get(player),"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(last_hit.get(player),"GUNGAME_KILL", player.getName()));
-								player.sendMessage(Language.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(player,"GUNGAME_KILLED_BY", last_hit.get(player).getName()));
-								player.sendMessage(Language.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(player, "HEART",new String[]{last_hit.get(player).getName(),UtilPlayer.getHealthBar(last_hit.get(player))}));
+								last_hit.get(player).sendMessage(TranslationHandler.getText(last_hit.get(player),"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(last_hit.get(player),"GUNGAME_KILL", player.getName()));
+								player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(player,"GUNGAME_KILLED_BY", last_hit.get(player).getName()));
+								player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(player, "HEART",new String[]{last_hit.get(player).getName(),UtilPlayer.getHealthBar(last_hit.get(player))}));
 
 								UtilPlayer.addPotionEffect(last_hit.get(player), PotionEffectType.REGENERATION, 3, 4);
 								getInstance().getStatsManager().add(last_hit.get(player), StatsKey.KILLS,1);
@@ -396,15 +396,15 @@ public class GunGameListener extends kListener{
 			
 			if(ev.getEntity().getKiller() instanceof Player){
 				a=(Player)ev.getEntity().getKiller();
-				a.sendMessage(Language.getText(a,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(a,"GUNGAME_KILL", v.getName()));
+				a.sendMessage(TranslationHandler.getText(a,"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(a,"GUNGAME_KILL", v.getName()));
 				a.playSound(a.getLocation(), Sound.LEVEL_UP,1f, 1f);
-				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"GUNGAME_KILLED_BY", a.getName()));
-				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v, "HEART",new String[]{a.getName(),UtilPlayer.getHealthBar(a)}));
+				v.sendMessage(TranslationHandler.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(v,"GUNGAME_KILLED_BY", a.getName()));
+				v.sendMessage(TranslationHandler.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(v, "HEART",new String[]{a.getName(),UtilPlayer.getHealthBar(a)}));
 				getInstance().getKit().setLevel(a, a.getLevel()+1);
 				UtilPlayer.addPotionEffect(a, PotionEffectType.REGENERATION, 3, 4);
 				getInstance().getStatsManager().add(a, StatsKey.KILLS,1);
 			}else{
-				v.sendMessage(Language.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+Language.getText(v,"DEATH", v.getName()));
+				v.sendMessage(TranslationHandler.getText(v,"PREFIX_GAME",GameType.GUNGAME.getTyp())+TranslationHandler.getText(v,"DEATH", v.getName()));
 			}
 		}
 	}

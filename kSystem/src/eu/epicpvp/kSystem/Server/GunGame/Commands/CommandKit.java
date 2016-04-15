@@ -19,8 +19,8 @@ import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Command.Commands.CommandDelKit;
 import eu.epicpvp.kcore.Command.Commands.Events.AddKitEvent;
 import eu.epicpvp.kcore.Command.Commands.Events.DeleteKitEvent;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilEffect;
 import eu.epicpvp.kcore.Util.UtilParticle;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
@@ -125,10 +125,10 @@ public class CommandKit implements CommandExecutor{
 		
 		if(player.isOp()){
 			if(args.length==0){
-				player.sendMessage(Language.getText(player, "PREFIX")+"/kit [Level]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"/kit [Level]");
 				String kits="";
 				for(String kit : this.kits_content.keySet())kits+=kit+",";
-				player.sendMessage(Language.getText(player, "PREFIX")+"Kits: "+(kits.equalsIgnoreCase("") ? Language.getText(player, "KITS_EMPTY") : kits.substring(0, kits.length()-1)));
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"Kits: "+(kits.equalsIgnoreCase("") ? TranslationHandler.getText(player, "KITS_EMPTY") : kits.substring(0, kits.length()-1)));
 			}else{
 					if(args[0].equalsIgnoreCase("all")){
 						System.out.println("ALL");
@@ -138,14 +138,14 @@ public class CommandKit implements CommandExecutor{
 							if(kits_content.containsKey("kit"+l)){
 								for(Player p : UtilServer.getPlayers()){
 									setLevel(p, l);
-									p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "KIT_USE",kit));
+									p.sendMessage(TranslationHandler.getText(p, "PREFIX")+TranslationHandler.getText(p, "KIT_USE",kit));
 								}
 							}else{
-								player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "KIT_EXIST"));
+								player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "KIT_EXIST"));
 							}
 							
 						}catch(NumberFormatException e){
-							player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "KIT_EXIST"));
+							player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "KIT_EXIST"));
 						}
 					}else{
 						try{
@@ -153,13 +153,13 @@ public class CommandKit implements CommandExecutor{
 
 							if(kits_content.containsKey("kit"+l)){
 								setLevel(player, l);
-								player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "KIT_USE",kit));
+								player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "KIT_USE",kit));
 							}else{
-								player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "KIT_EXIST"));
+								player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "KIT_EXIST"));
 							}
 							
 						}catch(NumberFormatException e){
-							player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "KIT_EXIST"));
+							player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "KIT_EXIST"));
 						}
 					}
 			}

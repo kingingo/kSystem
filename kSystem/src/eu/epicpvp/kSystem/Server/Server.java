@@ -1,9 +1,7 @@
 package eu.epicpvp.kSystem.Server;
 
-import net.minecraft.server.v1_8_R3.CommandEnchant;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.kSystem.ServerSystem;
-import lombok.Getter;
 import eu.epicpvp.kcore.Command.CommandHandler;
 import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
 import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
@@ -25,7 +23,6 @@ import eu.epicpvp.kcore.Command.Commands.CommandNacht;
 import eu.epicpvp.kcore.Command.Commands.CommandR;
 import eu.epicpvp.kcore.Command.Commands.CommandSonne;
 import eu.epicpvp.kcore.Command.Commands.CommandTag;
-import eu.epicpvp.kcore.GemsShop.GemsShop;
 import eu.epicpvp.kcore.Hologram.Hologram;
 import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Chat.ChatListener;
@@ -35,6 +32,7 @@ import eu.epicpvp.kcore.TeleportManager.TeleportManager;
 import eu.epicpvp.kcore.UserDataConfig.UserDataConfig;
 import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilServer;
+import lombok.Getter;
 
 public class Server{
 
@@ -90,7 +88,7 @@ public class Server{
 		this.commandHandler.register(CommandLocations.class, new CommandLocations(instance));
 //		this.commandHandler.register(CommandStatsAdmin.class, new CommandStatsAdmin(statsManager));
 		
-		new BungeeCordFirewallListener(getInstance().getMysql(),commandHandler, getInstance().getServerType().getName());
+		new BungeeCordFirewallListener(getInstance(),commandHandler);
 		UtilServer.createLagListener(getCommandHandler());
 		UtilInv.getBase(getInstance());
 	}

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Command.Commands.Events.AddKitEvent;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.kConfig.kConfig;
 
 public class CommandSetKit implements CommandExecutor{
@@ -26,7 +26,7 @@ public class CommandSetKit implements CommandExecutor{
 		
 		if(player.isOp()){
 			if(args.length==0){
-				player.sendMessage(Language.getText(player, "PREFIX")+"/setkit [LEVEL]");
+				player.sendMessage(TranslationHandler.getText(player, "PREFIX")+"/setkit [LEVEL]");
 			}else{
 				try{
 					int i = Integer.valueOf(args[0]);
@@ -37,9 +37,9 @@ public class CommandSetKit implements CommandExecutor{
 					AddKitEvent ev = new AddKitEvent(player, kit,0);
 					Bukkit.getPluginManager().callEvent(ev);
 					config.save();
-					player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "KIT_SET",kit));
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "KIT_SET",kit));
 				}catch(NumberFormatException e){
-					player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "NO_INTEGER",args[0]));
+					player.sendMessage(TranslationHandler.getText(player, "PREFIX")+TranslationHandler.getText(player, "NO_INTEGER",args[0]));
 				}
 				
 			}
