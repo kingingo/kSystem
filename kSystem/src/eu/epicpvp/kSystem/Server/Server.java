@@ -1,7 +1,7 @@
 package eu.epicpvp.kSystem.Server;
 
 import dev.wolveringer.dataserver.gamestats.GameType;
-import eu.epicpvp.kSystem.ServerSystem;
+import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kcore.Command.CommandHandler;
 import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
 import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
@@ -37,7 +37,7 @@ import lombok.Getter;
 public class Server{
 
 	@Getter
-	private ServerSystem instance;
+	private kServerSystem instance;
 	@Getter
 	private Hologram hologram;
 	@Getter
@@ -55,7 +55,7 @@ public class Server{
 	@Getter
 	private UserDataConfig userData;
 	
-	public Server(ServerSystem instance){
+	public Server(kServerSystem instance){
 		this.instance=instance;
 		this.permissionManager=new PermissionManager(instance);
 		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);

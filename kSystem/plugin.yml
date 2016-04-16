@@ -1,5 +1,5 @@
-name: ServerSystem
+name: kServerSystem
 author: KingIngo
 version: 1.8
-main: eu.epicpvp.kSystem.ServerSystem
+main: eu.epicpvp.kSystem.kServerSystem
 depend: [kCore]

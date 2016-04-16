@@ -14,7 +14,7 @@ import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 
-public class ServerSystem extends JavaPlugin{
+public class kServerSystem extends JavaPlugin{
 
 	@Getter
 	private MySQL mysql;

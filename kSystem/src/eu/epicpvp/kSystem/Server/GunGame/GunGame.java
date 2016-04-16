@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import dev.wolveringer.dataserver.gamestats.ServerType;
-import eu.epicpvp.kSystem.ServerSystem;
+import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandGunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandKit;
@@ -41,7 +41,7 @@ public class GunGame extends Server{
 	@Getter
 	private GunGameListener listener;
 	
-	public GunGame(ServerSystem instance){
+	public GunGame(kServerSystem instance){
 		super(instance);
     	UtilWorld.LoadWorld(new WorldCreator("gungame"), new CleanroomChunkGenerator("64,WATER"));
     	
