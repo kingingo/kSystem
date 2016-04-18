@@ -27,6 +27,7 @@ import eu.epicpvp.kcore.Hologram.Hologram;
 import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Chat.ChatListener;
 import eu.epicpvp.kcore.Permission.PermissionManager;
+import eu.epicpvp.kcore.Permission.Group.GroupTyp;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
 import eu.epicpvp.kcore.TeleportManager.TeleportManager;
 import eu.epicpvp.kcore.UserDataConfig.UserDataConfig;
@@ -57,7 +58,7 @@ public class Server{
 	
 	public Server(kServerSystem instance){
 		this.instance=instance;
-		this.permissionManager=new PermissionManager(instance);
+		this.permissionManager=new PermissionManager(instance,GroupTyp.GUNGAME);
 		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);
 		this.money=new StatsManager(getInstance(), getInstance().getClient(), GameType.Money);
 		this.commandHandler=UtilServer.createCommandHandler(getInstance());

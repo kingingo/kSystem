@@ -235,7 +235,7 @@ public class GunGameListener extends kListener{
 	
 	@EventHandler
 	public void setboard(PlayerSetScoreboardEvent ev){
-		UtilScoreboard.addBoard(ev.getPlayer().getScoreboard(), DisplaySlot.SIDEBAR, "§f§lEPICPVP - GUNGAME");
+		UtilScoreboard.addBoard(ev.getPlayer().getScoreboard(), DisplaySlot.SIDEBAR, UtilScoreboard.getScoreboardDisplayname()+" - GUNGAME");
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "    ", DisplaySlot.SIDEBAR, 11);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aKills:", DisplaySlot.SIDEBAR, 10);
 		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f"+getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.KILLS)+" ", DisplaySlot.SIDEBAR, 9);
@@ -269,7 +269,6 @@ public class GunGameListener extends kListener{
 		
 		getInstance().getUserData().getConfig(ev.getPlayer()).set("lastLogin", System.currentTimeMillis());
 		ev.setQuitMessage(null);
-		getInstance().getStatsManager().save(ev.getPlayer());
 	}
 	
 	@EventHandler
@@ -281,9 +280,10 @@ public class GunGameListener extends kListener{
 		}
 		ev.getPlayer().setGameMode(GameMode.ADVENTURE);
 		getInstance().getStatsManager().loadPlayer(ev.getPlayer());
+		getInstance().getMoney().loadPlayer(ev.getPlayer());
 		ev.setJoinMessage(null);
 		ev.getPlayer().teleport(getInstance().getSpawn());
-		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEpicPvP§8.§eeu §8| §aGunGame-Server", "§aTeamSpeak: §7ts.EpicPvP.eu §8| §eWebsite: §7EpicPvP.eu");
+		UtilPlayer.setTab(ev.getPlayer(), "GunGame-Server");
 	}
 	
 //	Packet s;
@@ -319,7 +319,7 @@ public class GunGameListener extends kListener{
 							last_hit.remove(player);
 						}
 
-						getInstance().getStatsManager().add(last_hit.get(player), StatsKey.DEATHS,1);
+						getInstance().getStatsManager().add(player, StatsKey.DEATHS,1);
 						player.teleport(getInstance().getSpawn());
 						player.setHealth(player.getMaxHealth());
 						getInstance().getKit().death(player);
