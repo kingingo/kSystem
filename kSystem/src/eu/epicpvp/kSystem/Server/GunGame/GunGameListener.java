@@ -106,7 +106,7 @@ public class GunGameListener extends kListener{
 //			if(UtilPlayer.isOnline(vote.getPlayer())){
 //				player=Bukkit.getPlayer(vote.getPlayer());
 //				if(UtilServer.getDeliveryPet()!=null){
-//					UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
+//					UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for ClashMC", true);
 //				}
 //				getInstance().getKit().setLevel(player, player.getLevel()+2);
 //				player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "VOTE_THX"));
@@ -166,7 +166,7 @@ public class GunGameListener extends kListener{
 //			if(ev.getManager().getType() != GameType.Money){
 //				if(vote_list.contains( UtilPlayer.getRealUUID(player) )){
 //					 if(UtilServer.getDeliveryPet()!=null){
-//						 UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for EpicPvP", true);
+//						 UtilServer.getDeliveryPet().deliveryUSE(player, "§aVote for ClashMC", true);
 //					 }
 //					 vote_list.remove(UtilPlayer.getRealUUID(player));
 //					 getInstance().getKit().setLevel(player, player.getLevel()+1);
