@@ -91,7 +91,6 @@ public class Server{
 		
 		new BungeeCordFirewallListener(getInstance(),commandHandler);
 		UtilServer.createLagListener(getCommandHandler());
-		UtilInv.getBase(getInstance());
 	}
 	
 	public void onDisable(){}

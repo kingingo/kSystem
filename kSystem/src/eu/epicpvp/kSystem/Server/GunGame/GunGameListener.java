@@ -35,7 +35,7 @@ import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
-import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangeEvent;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangedEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
@@ -218,7 +218,7 @@ public class GunGameListener extends kListener{
 	}
 	
 	@EventHandler
-	public void statsChange(PlayerStatsChangeEvent ev){
+	public void statsChange(PlayerStatsChangedEvent ev){
 		if(UtilPlayer.isOnline(ev.getPlayerId())){
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			if(ev.getManager().getType() != GameType.Money){
