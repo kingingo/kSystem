@@ -33,6 +33,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangedEvent;
@@ -77,7 +78,11 @@ public class GunGameListener extends kListener{
 		this.deaths_update=new ArrayList<>();
 	}
 	
-	
+	@EventHandler
+	public void update(ServerStatusUpdateEvent ev){
+		ev.getPacket().setPlayers(UtilServer.getPlayers().size());
+		ev.getPacket().setTyp(GameType.GUNGAME);
+	}
 	
 	@EventHandler
     public void onBlockFromTo(BlockFromToEvent event) {
