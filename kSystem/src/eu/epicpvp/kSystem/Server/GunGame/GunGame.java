@@ -66,7 +66,7 @@ public class GunGame extends Server{
 						p.closeInventory();
 						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"§7-----------------------------------------");
 						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+" ");
-						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"Vote Link:§a http://goo.gl/wxdAj4");
+						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"Vote Link:§a http://vote.clashmc.eu/");
 						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+" ");
 						p.sendMessage(TranslationHandler.getText(p,"PREFIX")+"§7-----------------------------------------");
 					}
