@@ -12,6 +12,7 @@ import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandGunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandKit;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandMap;
+import eu.epicpvp.kcore.AACHack.AACHack;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Command.Commands.CommandStats;
 import eu.epicpvp.kcore.Command.Commands.CommandWarp;
@@ -56,8 +57,8 @@ public class GunGame extends Server{
 		getCommandHandler().register(CommandStats.class, new CommandStats(getStatsManager()));
 		
 		this.listener=new GunGameListener(this);
-		UtilServer.createGemsShop(new GemsShop(getHologram(),getMoney(),getCommandHandler(), UtilInv.getBase(),getPermissionManager(), getInstance().getServerType()));
-		
+		UtilServer.createGemsShop(new GemsShop(getInstance().getServerType()));
+		new AACHack("gungame", UtilServer.getMysql(), UtilServer.getClient());
 		UtilServer.createDeliveryPet(new DeliveryPet(UtilInv.getBase(),null,new DeliveryObject[]{
 			new DeliveryObject(new String[]{"","§7Click for Vote!","","§eGunGame Rewards:","2 Level Up","§ePvP Rewards:","§7   200 Epics","§7   1x Inventory Repair","","§eGame Rewards:","§7   25 Gems","§7   100 Coins","","§eSkyBlock Rewards:","§7   200 Epics","§7   2x Diamonds","§7   2x Iron Ingot","§7   2x Gold Ingot"},PermissionType.DELIVERY_PET_VOTE,false,28,"§aVote for ClashMC",Material.PAPER,Material.REDSTONE_BLOCK,new Click(){
 
