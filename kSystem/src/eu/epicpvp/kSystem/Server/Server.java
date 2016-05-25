@@ -89,7 +89,7 @@ public class Server{
 		this.commandHandler.register(CommandLocations.class, new CommandLocations(instance));
 //		this.commandHandler.register(CommandStatsAdmin.class, new CommandStatsAdmin(statsManager));
 		
-		new BungeeCordFirewallListener(getInstance(),commandHandler);
+		new BungeeCordFirewallListener(commandHandler);
 		UtilServer.createLagListener(getCommandHandler());
 	}
 	

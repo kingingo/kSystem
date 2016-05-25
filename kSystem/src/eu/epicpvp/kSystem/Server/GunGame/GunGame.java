@@ -46,8 +46,6 @@ public class GunGame extends Server{
 		super(instance);
     	UtilWorld.LoadWorld(new WorldCreator("gungame"), new CleanroomChunkGenerator("64,WATER"));
     	
-//    	new AACHack("gungame", getPermissionManager().getMysql(),instance.getPacketManager());
-    	
 		this.kit=new CommandKit(this);
 		this.map=new CommandMap(this);
 		getCommandHandler().register(CommandKit.class, kit);
@@ -58,7 +56,9 @@ public class GunGame extends Server{
 		
 		this.listener=new GunGameListener(this);
 		UtilServer.createGemsShop(new GemsShop(getInstance().getServerType()));
-		new AACHack("gungame", UtilServer.getMysql(), UtilServer.getClient());
+		AACHack a = new AACHack("gungame", UtilServer.getMysql(), UtilServer.getClient());
+		a.setCreateReport(true);
+		
 		UtilServer.createDeliveryPet(new DeliveryPet(UtilInv.getBase(),null,new DeliveryObject[]{
 			new DeliveryObject(new String[]{"","§7Click for Vote!","","§eGunGame Rewards:","2 Level Up","§ePvP Rewards:","§7   200 Epics","§7   1x Inventory Repair","","§eGame Rewards:","§7   25 Gems","§7   100 Coins","","§eSkyBlock Rewards:","§7   200 Epics","§7   2x Diamonds","§7   2x Iron Ingot","§7   2x Gold Ingot"},PermissionType.DELIVERY_PET_VOTE,false,28,"§aVote for ClashMC",Material.PAPER,Material.REDSTONE_BLOCK,new Click(){
 
