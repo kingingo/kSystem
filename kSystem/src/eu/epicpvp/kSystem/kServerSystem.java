@@ -6,6 +6,7 @@ import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.Server;
+import eu.epicpvp.kSystem.Server.Creative.Creative;
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
@@ -37,6 +38,10 @@ public class kServerSystem extends JavaPlugin{
 			serverType=ServerType.GUNGAME;
 			this.server=new GunGame(this);
 			break;
+		case "creative": 
+			serverType=ServerType.CREATIVE;
+			this.server=new Creative(this);
+			break;
 		default:
 			System.err.println("[kSystem]: ServerType nicht erkannt ("+getConfig().getString("Config.Server")+")");
 			UtilServer.disable();
@@ -50,7 +55,7 @@ public class kServerSystem extends JavaPlugin{
 	}
 	
 	public void loadConfig(){
-	    getConfig().addDefault("Config.Server", "PvP");
+	    getConfig().addDefault("Config.Server", "creative");
 	    getConfig().addDefault("Config.ID", "1");
 		getConfig().addDefault("Config.MySQL.Host", "NONE");
 	    getConfig().addDefault("Config.MySQL.DB", "NONE");

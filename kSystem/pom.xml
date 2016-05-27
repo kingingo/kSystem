@@ -117,5 +117,10 @@
 			<version>1.16.8</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>plotme</artifactId>
+			<version>R7</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -278,11 +278,6 @@ public class GunGameListener extends kListener{
 	
 	@EventHandler
 	public void join(PlayerJoinEvent ev){
-		for(Player player : UtilServer.getPlayers()){
-			player.hidePlayer(ev.getPlayer());
-			player.showPlayer(ev.getPlayer());
-			ev.getPlayer().showPlayer(player);
-		}
 		ev.getPlayer().setGameMode(GameMode.ADVENTURE);
 		getInstance().getStatsManager().loadPlayer(ev.getPlayer());
 		getInstance().getMoney().loadPlayer(ev.getPlayer());
