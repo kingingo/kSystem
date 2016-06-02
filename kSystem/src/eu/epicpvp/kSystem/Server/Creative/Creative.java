@@ -113,8 +113,6 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandWorkbench.class, new CommandWorkbench());
 		getCommandHandler().register(CommandSuffix.class, new CommandSuffix(UtilServer.getUserData()));
 		getCommandHandler().register(CommandPacketToggle.class, new CommandPacketToggle(instance));
-		getCommandHandler().register(CommandAddEpics.class, new CommandAddEpics(getStatsManager()));
-		getCommandHandler().register(CommandGiveGems.class, new CommandGiveGems(UtilServer.getGemsShop().getGems()));
 		
 		new CreativeListener(this);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);

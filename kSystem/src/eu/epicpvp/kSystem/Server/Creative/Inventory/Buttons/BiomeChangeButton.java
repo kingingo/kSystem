@@ -20,15 +20,10 @@ public class BiomeChangeButton extends ButtonBase{
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				PlotPlayer pplayer = api.wrapPlayer(player);
-				Plot plot = pplayer.getLocation().getPlot();
+				Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
 				
 				plot.addRunning();
-			    plot.setBiome(biome.name(), new Runnable()
-			    {
-			      public void run() {
-			        plot.removeRunning();
-			      }
-			    });
+			    plot.setBiome(biome.name(), null);
 			}
 			
 		}, item);

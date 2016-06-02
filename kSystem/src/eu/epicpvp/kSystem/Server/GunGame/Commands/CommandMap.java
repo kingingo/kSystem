@@ -26,6 +26,7 @@ import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagType;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Lists.kSort;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
@@ -34,7 +35,6 @@ import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilTime;
 import eu.epicpvp.kcore.kConfig.kConfig;
-import eu.epicpvp.kcore.kListen.kSort;
 import lombok.Getter;
 import lombok.Setter;
 

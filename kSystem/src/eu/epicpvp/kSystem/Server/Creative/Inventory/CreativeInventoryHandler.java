@@ -6,8 +6,10 @@ import org.bukkit.SkullType;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.intellectualcrafters.plot.api.PlotAPI;
+import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
 import eu.epicpvp.kSkyblock.World.Island.Island;
@@ -22,6 +24,7 @@ import eu.epicpvp.kcore.Inventory.Inventory.InventoryYesNo;
 import eu.epicpvp.kcore.Inventory.Item.Click;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonCopy;
+import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonOpenInventory;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonOpenInventoryCopy;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -62,7 +65,7 @@ public class CreativeInventoryHandler {
 	public void open(Player player){
 		PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
 		
-		if(pplayer.getLocation().getPlot()!=null){
+		if(!pplayer.getPlots().isEmpty()){
 			player.openInventory(this.menue);
 		}else{
 			player.openInventory(this.create);
@@ -72,12 +75,12 @@ public class CreativeInventoryHandler {
 	public void init(){
 		this.member = new InventoryCopy(InventorySize._45, "Member Page");
 		UtilInv.getBase().addPage(member);
-		this.invited = new InventoryCopy(InventorySize._45, "Member Page");
+		this.invited = new InventoryCopy(InventorySize._54, "Member Page");
 		UtilInv.getBase().addPage(invited);
 		this.biomeChange = new InventoryPageBase(InventorySize._54, "Biome ändern");
 		this.options = new InventoryCopy(InventorySize._54, "Einstellungen");
 		UtilInv.getBase().addPage(options);
-		this.menue = new InventoryPageBase(InventorySize._54, "Plot Menue");
+		this.menue = new InventoryPageBase(InventorySize._45, "Plot Menue");
 		UtilInv.getBase().addPage(this.menue);
 		this.create = new InventoryPageBase(InventorySize._27, "Plot Create");
 		UtilInv.getBase().addPage(this.create);
@@ -89,7 +92,7 @@ public class CreativeInventoryHandler {
 			player.closeInventory();
 		}}, UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cSchließen")));
 		
-		this.create.addButton(12, new ButtonBase(new Click(){
+		this.create.addButton(14, new ButtonBase(new Click(){
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				Bukkit.dispatchCommand(player, "plot auto");
@@ -103,47 +106,42 @@ public class CreativeInventoryHandler {
 		//CREATE END
 		
 		//MENUE START
-		this.menue.addButton(11, new ButtonBase(new Click(){
+		this.menue.addButton(10, new ButtonBase(new Click(){
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
-				pplayer.teleport(pplayer.getLocation().getPlot().getHome());
+				pplayer.teleport(((Plot)pplayer.getPlots().toArray()[0]).getHome());
 			}},UtilItem.Item(new ItemStack(Material.BED), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Teleportiere dich zu deinem §ePlot§6.")));
 		
-		this.menue.addButton(13, new ButtonBase(new Click(){
+		this.menue.addButton(12, new ButtonBase(new Click(){
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
-				pplayer.teleport(pplayer.getLocation().getPlot().getCenter());
+				pplayer.teleport( ((Plot)pplayer.getPlots().toArray()[0]).getCenter() );
 			}},UtilItem.Item(new ItemStack(Material.FIREWORK_CHARGE), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Teleportiere dich in die §eMitte§6 deines Plots.")));
 		
-		this.menue.addButton(15, new ButtonBase(new Click(){
+		this.menue.addButton(14, new ButtonBase(new Click(){
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				
 			}},UtilItem.Item(new ItemStack(Material.EYE_OF_ENDER), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Besuche ein §eanderes§6 Plot")));
 		
-		this.menue.addButton(17, new ButtonBase(new Click(){
+		this.menue.addButton(16, new ButtonBase(new Click(){
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				player.teleport(Bukkit.getWorld("plot").getSpawnLocation());
 			}},UtilItem.Item(new ItemStack(Material.ENDER_PEARL), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Teleportiere dich zum §eSpawn")));
 		
-		this.menue.addButton(20, new ButtonOpenInventoryCopy(this.member, UtilInv.getBase(), UtilItem.Item(new ItemStack(Material.SKULL,1,(byte)SkullType.PLAYER.ordinal()), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§e Mitglieder §6Verwaltung")));
+		this.menue.addButton(20, new ButtonOpenInventoryCopy(this.member, UtilInv.getBase(), UtilItem.Item(new ItemStack(Material.SKULL_ITEM,1,(byte)SkullType.PLAYER.ordinal()), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§e Mitglieder §6Verwaltung")));
 		
-		this.menue.addButton(24, new ButtonBase(new Click(){
-
-			@Override
-			public void onClick(Player player, ActionType type, Object object) {
-				
-			}},UtilItem.Item(new ItemStack(Material.EMERALD), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Plots auf denen du §eMitglied§6 bist")));
+		this.menue.addButton(24, new ButtonOpenInventoryCopy(invited, UtilInv.getBase(), UtilItem.Item(new ItemStack(Material.EMERALD), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Plots auf denen du §eMitglied§6 bist")));
 		
 
-		this.menue.addButton(28, new ButtonOpenInventoryCopy(UtilServer.getAchievementsHandler().getInventory(), UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(Material.BOOK),"§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Erfolge")));
+//		this.menue.addButton(28, new ButtonOpenInventoryCopy(UtilServer.getAchievementsHandler().getInventory(), UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(Material.BOOK),"§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Erfolge")));
 		this.menue.addButton(31, new ButtonOpenInventoryCopy(this.options, UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(356), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Einstellungen")));
 		this.menue.addButton(34, new ButtonBase(new Click(){
 
@@ -153,8 +151,11 @@ public class CreativeInventoryHandler {
 
 					@Override
 					public void onClick(Player player, ActionType type, Object object) {
-						Bukkit.dispatchCommand(player, "plot delete");
-						player.openInventory(create);
+						PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
+						Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
+						
+						plot.deletePlot(null);
+						open(player);
 					}
 					
 				}, new Click(){
@@ -168,7 +169,7 @@ public class CreativeInventoryHandler {
 				
 				UtilInv.getBase().addAnother(qu);
 				player.openInventory(qu);
-			}},UtilItem.RenameItem(new ItemStack(Material.EMERALD), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§c Plot löschen")));
+			}},UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)14), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§c Plot löschen")));
 
 		this.menue.addButton(0, new ButtonBase(new Click(){
 			@Override
@@ -194,7 +195,7 @@ public class CreativeInventoryHandler {
 				player.openInventory(biomeChange);
 			}
 			
-		}, UtilItem.RenameItem(new ItemStack(Material.BED), ""+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Plot Biom ändern")));
+		}, UtilItem.RenameItem(new ItemStack(Material.GRASS), ""+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Plot Biom ändern")));
 		
 		this.options.setItem(InventorySplit._27.getMiddle(), UtilItem.Item(new ItemStack(Material.EYE_OF_ENDER), new String[]{" ","§7Hier kannst du deinen Besucher-" ,"§7Warp aktivieren und deaktivieren."}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Besucher Warp bearbeiten"));
 		this.options.addButton(InventorySplit._36.getMiddle(), new ButtonCopy(new Click(){
@@ -217,22 +218,24 @@ public class CreativeInventoryHandler {
 				kConfig config = UtilServer.getUserData().getConfig(player);
 				
 				if(config.getBoolean("Plot.Visit")){
-					config.set("Plot.Visit", "false");
-					((InventoryPageBase)object).setItem(InventorySplit._36.getMiddle(), UtilItem.RenameItem(new ItemStack(351,1,(byte)8), "§cOff"));
+					config.set("Plot.Visit", false);
+					((ItemStack)object).setDurability((short)8);
+					ItemMeta im = ((ItemStack)object).getItemMeta();
+					im.setDisplayName("§cOff");
+					((ItemStack)object).setItemMeta(im);
 				}else{
-					config.set("Plot.Visit", "true");
-					((InventoryPageBase)object).setItem(InventorySplit._36.getMiddle(), UtilItem.RenameItem(new ItemStack(351,1,(byte)10), "§aOn"));
+					config.set("Plot.Visit", true);
+					((ItemStack)object).setDurability((short)10);
+					ItemMeta im = ((ItemStack)object).getItemMeta();
+					im.setDisplayName("§aOn");
+					((ItemStack)object).setItemMeta(im);
 				}
 				config.save();
 			}
 			
 		}, new ItemStack(351,1,(byte)8)));
 
-		this.options.addButton(0, new ButtonBase(new Click(){
-			@Override
-		public void onClick(Player player, ActionType type, Object object) {
-			player.closeInventory();
-		}}, UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cSchließen")));
+		this.options.addButton(0, new ButtonOpenInventory(this.menue,UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cZurück")));
 		//OPTIONS END
 		
 		//Biome start
@@ -253,7 +256,7 @@ public class CreativeInventoryHandler {
 		
 		//Invited start
 			this.invited.setCreate_new_inv(true);
-			this.invited.addButton(0, new ButtonOpenInventoryCopy(this.options,UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cZurück")));
+			this.invited.addButton(0, new ButtonOpenInventory(this.menue,UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cZurück")));
 			int s = 20;
 			for(int i = 0; i < 3; i++){
 				this.invited.addButton(s, new InviteButton(this.invited, s, i, getPlotApi()));
@@ -263,7 +266,7 @@ public class CreativeInventoryHandler {
 			
 		//Member START
 			this.member.setCreate_new_inv(true);
-			this.member.addButton(0, new ButtonOpenInventoryCopy(this.options,UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cZurück")));
+			this.member.addButton(0, new ButtonOpenInventory(this.menue,UtilItem.RenameItem(new ItemStack(Material.BARRIER), "§cZurück")));
 			this.member.addButton(8, new ButtonBase(new Click(){
 
 				@Override

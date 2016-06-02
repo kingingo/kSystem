@@ -30,7 +30,7 @@ public class MemberButton extends ButtonCopy{
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				PlotPlayer pplayer = api.wrapPlayer(player);
-				Plot plot = pplayer.getLocation().getPlot();
+				Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
 				
 				if(plot.getMembers().size() > index){
 					UUID uuid = (UUID) plot.getMembers().toArray()[index];
@@ -49,7 +49,7 @@ public class MemberButton extends ButtonCopy{
 						@Override
 						public void onClick(Player player, ActionType type, Object object) {
 							PlotPlayer pplayer = api.wrapPlayer(player);
-							Plot plot = pplayer.getLocation().getPlot();
+							Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
 							UUID uuid = (UUID) plot.getMembers().toArray()[index];
 							plot.removeMember(uuid);
 							memberPage.open(player, UtilInv.getBase());
