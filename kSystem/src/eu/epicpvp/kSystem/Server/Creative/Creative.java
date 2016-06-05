@@ -53,6 +53,7 @@ import eu.epicpvp.kcore.Command.Commands.CommandSuffix;
 import eu.epicpvp.kcore.Command.Commands.CommandTag;
 import eu.epicpvp.kcore.Command.Commands.CommandWarp;
 import eu.epicpvp.kcore.Command.Commands.CommandWorkbench;
+import eu.epicpvp.kcore.TimeManager.TimeManager;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 
@@ -68,6 +69,7 @@ public class Creative extends Server{
 	public Creative(kServerSystem instance) {
 		super(instance);
 		this.plotApi = new PlotAPI();
+		new TimeManager(getPermissionManager());
 		
 		getCommandHandler().register(CommandkPlot.class, new CommandkPlot(this));
 		getCommandHandler().register(CommandDebug.class, new CommandDebug());
