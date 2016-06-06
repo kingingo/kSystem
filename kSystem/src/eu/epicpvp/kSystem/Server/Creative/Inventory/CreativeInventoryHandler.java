@@ -154,8 +154,13 @@ public class CreativeInventoryHandler {
 						PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
 						Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
 						
-						plot.deletePlot(null);
-						open(player);
+						plot.deletePlot(new Runnable(){
+
+							@Override
+							public void run() {
+								open(player);
+							}
+						});
 					}
 					
 				}, new Click(){

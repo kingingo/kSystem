@@ -5,6 +5,7 @@ import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -77,6 +78,5 @@ public class CreativeListener extends kListener{
 	public void join(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
 		ev.getPlayer().teleport(Bukkit.getWorld("plot").getSpawnLocation());
-		ev.getPlayer().setGameMode(GameMode.CREATIVE);
 	}
 }

@@ -118,6 +118,7 @@ public class Creative extends Server{
 		
 		new CreativeListener(this);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);
+		new PlotSquarePrepare();
 	}
 
 }
