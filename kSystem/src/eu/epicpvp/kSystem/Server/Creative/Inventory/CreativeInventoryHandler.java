@@ -12,7 +12,6 @@ import com.intellectualcrafters.plot.api.PlotAPI;
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
-import eu.epicpvp.kSkyblock.World.Island.Island;
 import eu.epicpvp.kSystem.Server.Creative.Creative;
 import eu.epicpvp.kSystem.Server.Creative.Inventory.Buttons.BiomeChangeButton;
 import eu.epicpvp.kSystem.Server.Creative.Inventory.Buttons.InviteButton;
@@ -26,9 +25,11 @@ import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonCopy;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonOpenInventory;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonOpenInventoryCopy;
-import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.AnvilGUI;
+import eu.epicpvp.kcore.Util.AnvilGUI.AnvilClickEvent;
+import eu.epicpvp.kcore.Util.AnvilGUI.AnvilClickEventHandler;
+import eu.epicpvp.kcore.Util.AnvilGUI.AnvilSlot;
 import eu.epicpvp.kcore.Util.InventorySize;
 import eu.epicpvp.kcore.Util.InventorySplit;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
@@ -36,9 +37,6 @@ import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
-import eu.epicpvp.kcore.Util.AnvilGUI.AnvilClickEvent;
-import eu.epicpvp.kcore.Util.AnvilGUI.AnvilClickEventHandler;
-import eu.epicpvp.kcore.Util.AnvilGUI.AnvilSlot;
 import eu.epicpvp.kcore.kConfig.kConfig;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -113,7 +111,6 @@ public class CreativeInventoryHandler {
 				PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
 				pplayer.teleport(((Plot)pplayer.getPlots().toArray()[0]).getHome());
 			}},UtilItem.Item(new ItemStack(Material.BED), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Teleportiere dich zu deinem §ePlot§6.")));
-		
 		this.menue.addButton(12, new ButtonBase(new Click(){
 
 			@Override
@@ -121,29 +118,17 @@ public class CreativeInventoryHandler {
 				PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
 				pplayer.teleport( ((Plot)pplayer.getPlots().toArray()[0]).getCenter() );
 			}},UtilItem.Item(new ItemStack(Material.FIREWORK_CHARGE), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Teleportiere dich in die §eMitte§6 deines Plots.")));
-		
-		this.menue.addButton(14, new ButtonBase(new Click(){
-
-			@Override
-			public void onClick(Player player, ActionType type, Object object) {
-				
-			}},UtilItem.Item(new ItemStack(Material.EYE_OF_ENDER), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Besuche ein §eanderes§6 Plot")));
-		
 		this.menue.addButton(16, new ButtonBase(new Click(){
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
-				player.teleport(Bukkit.getWorld("plot").getSpawnLocation());
+				player.teleport(Bukkit.getWorld("plotworld").getSpawnLocation());
 			}},UtilItem.Item(new ItemStack(Material.ENDER_PEARL), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Teleportiere dich zum §eSpawn")));
-		
 		this.menue.addButton(20, new ButtonOpenInventoryCopy(this.member, UtilInv.getBase(), UtilItem.Item(new ItemStack(Material.SKULL_ITEM,1,(byte)SkullType.PLAYER.ordinal()), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§e Mitglieder §6Verwaltung")));
-		
 		this.menue.addButton(24, new ButtonOpenInventoryCopy(invited, UtilInv.getBase(), UtilItem.Item(new ItemStack(Material.EMERALD), new String[]{}, "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Plots auf denen du §eMitglied§6 bist")));
-		
-
-//		this.menue.addButton(28, new ButtonOpenInventoryCopy(UtilServer.getAchievementsHandler().getInventory(), UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(Material.BOOK),"§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Erfolge")));
-		this.menue.addButton(31, new ButtonOpenInventoryCopy(this.options, UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(356), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Einstellungen")));
-		this.menue.addButton(34, new ButtonBase(new Click(){
+		this.menue.addButton(30, new ButtonOpenInventoryCopy(UtilServer.getAchievementsHandler().getInventory(), UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(Material.BOOK),"§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Erfolge")));
+		this.menue.addButton(14, new ButtonOpenInventoryCopy(this.options, UtilInv.getBase(), UtilItem.RenameItem(new ItemStack(356), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Einstellungen")));
+		this.menue.addButton(32, new ButtonBase(new Click(){
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
@@ -153,7 +138,7 @@ public class CreativeInventoryHandler {
 					public void onClick(Player player, ActionType type, Object object) {
 						PlotPlayer pplayer = getPlotApi().wrapPlayer(player);
 						Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
-						
+						player.closeInventory();
 						plot.deletePlot(new Runnable(){
 
 							@Override

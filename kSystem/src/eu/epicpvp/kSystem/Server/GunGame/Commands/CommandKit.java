@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import eu.epicpvp.kSystem.Server.Server;
+import eu.epicpvp.kSystem.Server.GunGame.GunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Events.PlayerGunGameLevelUpEvent;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Command.Commands.CommandDelKit;
@@ -41,9 +41,9 @@ public class CommandKit implements CommandExecutor{
 	@Getter
 	private HashMap<String,ItemStack[]> kits_armor = new HashMap<>();
 	@Getter
-	private Server instance;
+	private GunGame instance;
 	
-	public CommandKit(Server instance){
+	public CommandKit(GunGame instance){
 		this.config=new kConfig(new File("plugins"+File.separator+instance.getInstance().getPlugin(instance.getInstance().getClass()).getName()+File.separator+"kits.yml"));
 		this.instance=instance;
 		for(String kit : config.getPathList("kits").keySet()){

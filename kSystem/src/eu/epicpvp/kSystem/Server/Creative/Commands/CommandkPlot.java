@@ -9,12 +9,9 @@ import org.bukkit.entity.Player;
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
-import eu.epicpvp.kSkyblock.World.Island.Island;
-import eu.epicpvp.kSkyblock.World.Island.kPlayer;
 import eu.epicpvp.kSystem.Server.Creative.Creative;
+import eu.epicpvp.kSystem.Server.Creative.Inventory.Buttons.InviteButton;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
-import eu.epicpvp.kcore.Permission.PermissionType;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import lombok.Getter;
 
@@ -44,6 +41,7 @@ public class CommandkPlot implements CommandExecutor{
 							if(plot.getMembers().size()>=3)return false;
 							
 							plot.addMember(player.getUniqueId());
+							InviteButton.plotCache.refresh(player.getUniqueId());
 						}
 					}
 				}

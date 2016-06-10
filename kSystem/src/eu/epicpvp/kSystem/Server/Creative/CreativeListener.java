@@ -1,15 +1,17 @@
 package eu.epicpvp.kSystem.Server.Creative;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Permission.Permission;
+import eu.epicpvp.kcore.Permission.Events.PlayerLoadPermissionEvent;
+import eu.epicpvp.kcore.Permission.Group.Group;
 import eu.epicpvp.kcore.Util.RestartScheduler;
 import eu.epicpvp.kcore.Util.UtilServer;
 
@@ -20,6 +22,21 @@ public class CreativeListener extends kListener{
 	public CreativeListener(Creative instance) {
 		super(instance.getInstance(), "CreativeListener");
 		this.instance=instance;
+	}
+	
+	@EventHandler
+	public void perm(PlayerLoadPermissionEvent ev){
+		logMessage("PLAYER: "+ev.getPlayer().getName());
+		for(Permission perm : ev.getPermissionPlayer().getPermissions()){
+			logMessage("       "+perm.getPermissionToString());
+		}
+		
+		for(Group g : ev.getPermissionPlayer().getGroups()){
+			
+			for(Permission perm : g.getPermissions()){
+				logMessage("G:"+g.getName()+"   T:"+perm.getGroup().getName()+"    "+perm.getPermissionToString());
+			}
+		}
 	}
 
 	@EventHandler
@@ -46,6 +63,8 @@ public class CreativeListener extends kListener{
 	    	instance.getCreativeInventoryHandler().open(ev.getPlayer());
 	    	ev.setCancelled(true);
 	    	return;
+		}else if(cmd.equalsIgnoreCase("/kp")){
+			ev.setMessage(ev.getMessage().replaceAll("/kp", "/p"));
 		}
 	     
 		if(ev.getPlayer().isOp()){
@@ -62,11 +81,21 @@ public class CreativeListener extends kListener{
 		}
 	}
 	
+	@EventHandler
+	public void inv(InventoryCreativeEvent ev){
+		ev.setCancelled(false);
+	}
+	
 	public void restart(){
 		RestartScheduler restart = new RestartScheduler(instance.getInstance());
 		restart.setMoney(UtilServer.getGemsShop().getGems());
-		restart.setStats(instance.getStatsManager());
+		restart.setStats(instance.getMoney());
 		restart.start();
+	}
+	
+	@EventHandler
+	public void respawn(PlayerRespawnEvent ev){
+		ev.setRespawnLocation(Bukkit.getWorld("plotworld").getSpawnLocation());
 	}
 	
 	@EventHandler
@@ -74,9 +103,8 @@ public class CreativeListener extends kListener{
 		ev.setQuitMessage(null);
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler
 	public void join(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
-		ev.getPlayer().teleport(Bukkit.getWorld("plot").getSpawnLocation());
 	}
 }

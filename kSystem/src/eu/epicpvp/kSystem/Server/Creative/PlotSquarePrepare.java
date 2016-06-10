@@ -1,7 +1,6 @@
 package eu.epicpvp.kSystem.Server.Creative;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import com.intellectualcrafters.plot.config.C;
 

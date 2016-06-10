@@ -8,9 +8,9 @@ import dev.wolveringer.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.Creative.Creative;
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
+import eu.epicpvp.kcore.Addons.AddonSun;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class kServerSystem extends JavaPlugin{
 	
 	public void onEnable(){
 		loadConfig();
-		this.client = UtilServer.createClient(this,ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server")+getConfig().getString("Config.ID"));
+		this.client = UtilServer.createClient(this,ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server"));
 		this.mysql=UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 		this.updater=UtilServer.createUpdater(this);
 		new ListenerCMD(this);
@@ -47,6 +47,8 @@ public class kServerSystem extends JavaPlugin{
 			UtilServer.disable();
 			System.exit(0);
 		}
+	
+		new AddonSun(this, null);
 	}
 	
 	public void onDisable(){
@@ -56,7 +58,6 @@ public class kServerSystem extends JavaPlugin{
 	
 	public void loadConfig(){
 	    getConfig().addDefault("Config.Server", "creative");
-	    getConfig().addDefault("Config.ID", "1");
 		getConfig().addDefault("Config.MySQL.Host", "NONE");
 	    getConfig().addDefault("Config.MySQL.DB", "NONE");
 	    getConfig().addDefault("Config.MySQL.User", "NONE");

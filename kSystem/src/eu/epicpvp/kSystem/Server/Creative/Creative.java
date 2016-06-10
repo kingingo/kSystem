@@ -4,11 +4,15 @@ import java.util.HashMap;
 
 import com.intellectualcrafters.plot.api.PlotAPI;
 
+import dev.wolveringer.bukkit.permissions.GroupTyp;
 import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.Creative.Commands.CommandkPlot;
 import eu.epicpvp.kSystem.Server.Creative.Inventory.CreativeInventoryHandler;
-import eu.epicpvp.kcore.Command.Admin.CommandAddEpics;
+import eu.epicpvp.kcore.Achievements.BlockForBlock;
+import eu.epicpvp.kcore.Achievements.BobTheDestroyer;
+import eu.epicpvp.kcore.Achievements.Handler.Achievement;
+import eu.epicpvp.kcore.Achievements.Handler.AchievementsHandler;
 import eu.epicpvp.kcore.Command.Admin.CommandBroadcast;
 import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
 import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
@@ -17,8 +21,8 @@ import eu.epicpvp.kcore.Command.Admin.CommandFly;
 import eu.epicpvp.kcore.Command.Admin.CommandFlyspeed;
 import eu.epicpvp.kcore.Command.Admin.CommandGive;
 import eu.epicpvp.kcore.Command.Admin.CommandGiveAll;
-import eu.epicpvp.kcore.Command.Admin.CommandGiveGems;
 import eu.epicpvp.kcore.Command.Admin.CommandItem;
+import eu.epicpvp.kcore.Command.Admin.CommandK;
 import eu.epicpvp.kcore.Command.Admin.CommandLocations;
 import eu.epicpvp.kcore.Command.Admin.CommandMore;
 import eu.epicpvp.kcore.Command.Admin.CommandPacketToggle;
@@ -67,9 +71,11 @@ public class Creative extends Server{
 	private CreativeInventoryHandler creativeInventoryHandler;
 	
 	public Creative(kServerSystem instance) {
-		super(instance);
+		super(instance,GroupTyp.GAME);
+		this.invite=new HashMap<>();
 		this.plotApi = new PlotAPI();
 		new TimeManager(getPermissionManager());
+		new AchievementsHandler(getInstance(), new Achievement[]{new BlockForBlock(),new BobTheDestroyer()});
 		
 		getCommandHandler().register(CommandkPlot.class, new CommandkPlot(this));
 		getCommandHandler().register(CommandDebug.class, new CommandDebug());
@@ -115,6 +121,7 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandWorkbench.class, new CommandWorkbench());
 		getCommandHandler().register(CommandSuffix.class, new CommandSuffix(UtilServer.getUserData()));
 		getCommandHandler().register(CommandPacketToggle.class, new CommandPacketToggle(instance));
+		getCommandHandler().register(CommandK.class, new CommandK());
 		
 		new CreativeListener(this);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);

@@ -43,7 +43,7 @@ public class MemberButton extends ButtonCopy{
 
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
-				if(((ItemStack) object).getType()==Material.SKULL){
+				if(((ItemStack) object).getType()==Material.SKULL_ITEM){
 					InventoryYesNo qu = new InventoryYesNo("Spieler kicken?", new Click(){
 
 						@Override
@@ -52,6 +52,7 @@ public class MemberButton extends ButtonCopy{
 							Plot plot = ((Plot)pplayer.getPlots().toArray()[0]);
 							UUID uuid = (UUID) plot.getMembers().toArray()[index];
 							plot.removeMember(uuid);
+							InviteButton.plotCache.refresh(uuid);
 							memberPage.open(player, UtilInv.getBase());
 						}
 						
@@ -63,6 +64,8 @@ public class MemberButton extends ButtonCopy{
 						}
 						
 					});
+					UtilInv.getBase().addAnother(qu);
+					player.openInventory(qu);
 				}
 			}
 			

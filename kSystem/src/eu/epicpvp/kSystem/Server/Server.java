@@ -1,5 +1,6 @@
 package eu.epicpvp.kSystem.Server;
 
+import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kcore.Command.CommandHandler;
@@ -27,11 +28,9 @@ import eu.epicpvp.kcore.Hologram.Hologram;
 import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Chat.ChatListener;
 import eu.epicpvp.kcore.Permission.PermissionManager;
-import eu.epicpvp.kcore.Permission.Group.GroupTyp;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
 import eu.epicpvp.kcore.TeleportManager.TeleportManager;
 import eu.epicpvp.kcore.UserDataConfig.UserDataConfig;
-import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 
@@ -48,18 +47,15 @@ public class Server{
 	@Getter
 	private PermissionManager permissionManager;
 	@Getter
-	private StatsManager statsManager;
-	@Getter
 	private StatsManager money;
 	@Getter
 	private ChatListener chatListener;
 	@Getter
 	private UserDataConfig userData;
 	
-	public Server(kServerSystem instance){
+	public Server(kServerSystem instance,GroupTyp type){
 		this.instance=instance;
-		this.permissionManager=new PermissionManager(instance,GroupTyp.GUNGAME);
-		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);
+		this.permissionManager=new PermissionManager(instance,type);
 		this.money=new StatsManager(getInstance(), getInstance().getClient(), GameType.Money);
 		this.commandHandler=UtilServer.createCommandHandler(getInstance());
 		this.hologram=new Hologram(instance);

@@ -34,7 +34,7 @@ import eu.epicpvp.kcore.Util.UtilServer;
 
 public class InviteButton extends ButtonMultiCopy{
 
-	private static LoadingCache<UUID, ArrayList<Plot>> plotCache = CacheBuilder.newBuilder().maximumSize(500).expireAfterWrite(5, TimeUnit.MINUTES).build(new CacheLoader<UUID, ArrayList<Plot>>() {
+	public static LoadingCache<UUID, ArrayList<Plot>> plotCache = CacheBuilder.newBuilder().maximumSize(500).expireAfterWrite(5, TimeUnit.MINUTES).build(new CacheLoader<UUID, ArrayList<Plot>>() {
 		public ArrayList<Plot> load(UUID uuid) throws Exception {
 			ArrayList<Plot> plots = new ArrayList<>(PS.get().getPlots());
 			plots.removeIf(plot -> !plot.getMembers().contains(uuid));
@@ -112,6 +112,7 @@ public class InviteButton extends ButtonMultiCopy{
 										}
 											
 										plot.removeMember(player.getUniqueId());
+										plotCache.refresh(player.getUniqueId());
 										player.closeInventory();
 									}
 								} catch (ExecutionException e) {
