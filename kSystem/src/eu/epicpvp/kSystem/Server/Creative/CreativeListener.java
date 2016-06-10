@@ -81,10 +81,10 @@ public class CreativeListener extends kListener{
 		}
 	}
 	
-	@EventHandler
-	public void inv(InventoryCreativeEvent ev){
-		ev.setCancelled(false);
-	}
+//	@EventHandler
+//	public void inv(InventoryCreativeEvent ev){
+//		ev.setCancelled(false);
+//	}
 	
 	public void restart(){
 		RestartScheduler restart = new RestartScheduler(instance.getInstance());
