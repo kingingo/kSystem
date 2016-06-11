@@ -94,12 +94,14 @@ public class CreativeInventoryHandler {
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				Bukkit.dispatchCommand(player, "plot auto");
+				player.closeInventory();
 		}},UtilItem.RenameItem(new ItemStack(Material.SIGN), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Erstelle ein §eCreative§6 Plot!")));
 		
 		this.create.addButton(12, new ButtonBase(new Click(){
 			@Override
 			public void onClick(Player player, ActionType type, Object object) {
 				Bukkit.dispatchCommand(player, "plot claim");
+				player.closeInventory();
 		}},UtilItem.Item(new ItemStack(Material.IRON_BOOTS), new String[]{"","§7Klicke, um das Plot auf dem du dich","§7befindest für dich zu beanspruchen."},"§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Beanspruche dieses §eCreative§6 Plot!")));
 		//CREATE END
 		

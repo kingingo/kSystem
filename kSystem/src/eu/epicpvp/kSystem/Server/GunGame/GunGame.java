@@ -16,7 +16,6 @@ import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Command.Commands.CommandStats;
 import eu.epicpvp.kcore.Command.Commands.CommandWarp;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
-import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilWorld;
 import lombok.Getter;
 import lombok.Setter;

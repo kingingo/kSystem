@@ -2,17 +2,22 @@ package eu.epicpvp.kSystem.Server.Creative;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
+
 import com.intellectualcrafters.plot.api.PlotAPI;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.Creative.Commands.CommandkPlot;
 import eu.epicpvp.kSystem.Server.Creative.Inventory.CreativeInventoryHandler;
 import eu.epicpvp.kcore.Achievements.BlockForBlock;
 import eu.epicpvp.kcore.Achievements.BobTheDestroyer;
+import eu.epicpvp.kcore.Achievements.Obsession;
 import eu.epicpvp.kcore.Achievements.Handler.Achievement;
 import eu.epicpvp.kcore.Achievements.Handler.AchievementsHandler;
+import eu.epicpvp.kcore.Addons.AddonSun;
 import eu.epicpvp.kcore.Command.Admin.CommandBroadcast;
 import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
 import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
@@ -57,6 +62,7 @@ import eu.epicpvp.kcore.Command.Commands.CommandSuffix;
 import eu.epicpvp.kcore.Command.Commands.CommandTag;
 import eu.epicpvp.kcore.Command.Commands.CommandWarp;
 import eu.epicpvp.kcore.Command.Commands.CommandWorkbench;
+import eu.epicpvp.kcore.Particle.WingShop;
 import eu.epicpvp.kcore.TimeManager.TimeManager;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
@@ -71,11 +77,11 @@ public class Creative extends Server{
 	private CreativeInventoryHandler creativeInventoryHandler;
 	
 	public Creative(kServerSystem instance) {
-		super(instance,GroupTyp.GAME);
+		super(instance,GroupTyp.CREATIVE);
 		this.invite=new HashMap<>();
 		this.plotApi = new PlotAPI();
 		new TimeManager(getPermissionManager());
-		new AchievementsHandler(getInstance(), new Achievement[]{new BlockForBlock(),new BobTheDestroyer()});
+		new AchievementsHandler(instance, new Achievement[]{new BobTheDestroyer(),new BlockForBlock(),new Obsession(StatsKey.GAME_TIME)});
 		
 		getCommandHandler().register(CommandkPlot.class, new CommandkPlot(this));
 		getCommandHandler().register(CommandDebug.class, new CommandDebug());
@@ -122,10 +128,11 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandSuffix.class, new CommandSuffix(UtilServer.getUserData()));
 		getCommandHandler().register(CommandPacketToggle.class, new CommandPacketToggle(instance));
 		getCommandHandler().register(CommandK.class, new CommandK());
-		
+
+		new WingShop(instance);
 		new CreativeListener(this);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);
 		new PlotSquarePrepare();
+		new AddonSun(instance);
 	}
-
 }
