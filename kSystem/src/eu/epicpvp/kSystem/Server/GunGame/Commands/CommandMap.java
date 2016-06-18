@@ -57,7 +57,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 	private int time=2;
 	@Getter
 	private HashMap<String,Location> maps;
-	private ArrayList<kSort> ranking;
+	private ArrayList<kSort<String>> ranking;
 
 	@Getter
 	private ArmorStand npc1;
@@ -114,13 +114,13 @@ public class CommandMap extends kListener implements CommandExecutor{
 	
 	public void check(){
 		ranking.clear();
-		for(Player player : UtilServer.getPlayers())ranking.add(new kSort(player.getName(),player.getLevel()));
+		for(Player player : UtilServer.getPlayers())ranking.add(new kSort<String>(player.getName(),player.getLevel()));
 
 		Collections.sort(ranking,kSort.DESCENDING);
 		clear();
 		if(!ranking.isEmpty()){
 			if(ranking.size()>=1){
-				this.player1=Bukkit.getPlayer(ranking.get(0).getName());
+				this.player1=Bukkit.getPlayer(ranking.get(0).getObject());
 				if(npc1==null||npc1.isDead()){
 					getNPCL1().getChunk().load();
 					npc1=(ArmorStand)getNPCL1().getWorld().spawnEntity(getNPCL1(), EntityType.ARMOR_STAND);
@@ -144,7 +144,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 				ntm1.send();
 				
 				if(ranking.size()>=2){
-					this.player2=Bukkit.getPlayer(ranking.get(1).getName());
+					this.player2=Bukkit.getPlayer(ranking.get(1).getObject());
 					if(npc2==null||npc2.isDead()){
 						npc2=(ArmorStand)getNPCL2().getWorld().spawnEntity(getNPCL2(), EntityType.ARMOR_STAND);
 						npc2.setArms(true);
@@ -167,7 +167,7 @@ public class CommandMap extends kListener implements CommandExecutor{
 					ntm2.send();
 					
 					if(ranking.size()>=3){
-						this.player3=Bukkit.getPlayer(ranking.get(2).getName());
+						this.player3=Bukkit.getPlayer(ranking.get(2).getObject());
 						
 						if(npc3==null||npc3.isDead()){
 							npc3=(ArmorStand)getNPCL3().getWorld().spawnEntity(getNPCL3(), EntityType.ARMOR_STAND);

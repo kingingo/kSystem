@@ -2,12 +2,19 @@ package eu.epicpvp.kSystem.Server.Creative;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 
+import eu.epicpvp.kcore.Command.Admin.CommandLocations;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Util.RestartScheduler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
@@ -22,6 +29,14 @@ public class CreativeListener extends kListener{
 	}
 
 	@EventHandler
+	public void Sign(SignChangeEvent ev){
+		ev.setLine(0, ev.getLine(0).replaceAll("&", "§"));
+		ev.setLine(1, ev.getLine(1).replaceAll("&", "§"));
+		ev.setLine(2, ev.getLine(2).replaceAll("&", "§"));
+		ev.setLine(3, ev.getLine(3).replaceAll("&", "§"));
+	}
+	
+	@EventHandler
 	public void Command(PlayerCommandPreprocessEvent ev){
 		String cmd = "";
 	    if (ev.getMessage().contains(" ")){
@@ -31,7 +46,13 @@ public class CreativeListener extends kListener{
 	      cmd = ev.getMessage();
 	    }
 	    
-	    if(cmd.equalsIgnoreCase("/minecraft:")){
+	    if(cmd.startsWith("/me")){
+			ev.setCancelled(true);
+			return;
+		}else if(cmd.startsWith("/bukkit")){
+			ev.setCancelled(true);
+			return;
+		} else if(cmd.equalsIgnoreCase("/minecraft:")){
 	    	ev.setCancelled(true);
 	    	return;
 	    }else if(cmd.equalsIgnoreCase("/p")
@@ -63,10 +84,10 @@ public class CreativeListener extends kListener{
 		}
 	}
 	
-//	@EventHandler
-//	public void inv(InventoryCreativeEvent ev){
-//		ev.setCancelled(false);
-//	}
+	@EventHandler
+	public void inv(InventoryCreativeEvent ev){
+		ev.setCancelled(false);
+	}
 	
 	public void restart(){
 		RestartScheduler restart = new RestartScheduler(instance.getInstance());

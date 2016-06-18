@@ -17,6 +17,7 @@ import eu.epicpvp.kcore.Achievements.BobTheDestroyer;
 import eu.epicpvp.kcore.Achievements.Obsession;
 import eu.epicpvp.kcore.Achievements.Handler.Achievement;
 import eu.epicpvp.kcore.Achievements.Handler.AchievementsHandler;
+import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Addons.AddonSun;
 import eu.epicpvp.kcore.Command.Admin.CommandBroadcast;
 import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
@@ -75,13 +76,15 @@ public class Creative extends Server{
 	private HashMap<String, String> invite;
 	@Getter
 	private CreativeInventoryHandler creativeInventoryHandler;
+	@Getter
+	private WingShop wing;
 	
 	public Creative(kServerSystem instance) {
 		super(instance,GroupTyp.CREATIVE);
 		this.invite=new HashMap<>();
 		this.plotApi = new PlotAPI();
 		new TimeManager(getPermissionManager());
-		new AchievementsHandler(instance, new Achievement[]{new BobTheDestroyer(),new BlockForBlock(),new Obsession(StatsKey.GAME_TIME)});
+		new AchievementsHandler(instance, new Achievement[]{new BobTheDestroyer(),new BlockForBlock(),new Obsession(StatsKey.CREATIVE_TIME)});
 		
 		getCommandHandler().register(CommandkPlot.class, new CommandkPlot(this));
 		getCommandHandler().register(CommandDebug.class, new CommandDebug());
@@ -129,10 +132,11 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandPacketToggle.class, new CommandPacketToggle(instance));
 		getCommandHandler().register(CommandK.class, new CommandK());
 
-		new WingShop(instance);
+		this.wing = new WingShop(instance);
 		new CreativeListener(this);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);
 		new PlotSquarePrepare();
 		new AddonSun(instance);
+		new AddonDay(instance);
 	}
 }

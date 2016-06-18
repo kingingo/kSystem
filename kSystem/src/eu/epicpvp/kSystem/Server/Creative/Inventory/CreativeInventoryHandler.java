@@ -269,6 +269,7 @@ public class CreativeInventoryHandler {
 						public void onAnvilClick(AnvilClickEvent event) {
 							if(event.getSlot() == AnvilSlot.OUTPUT){
 								player.closeInventory();
+								
 								if(UtilPlayer.isOnline(event.getName())){
 									Player target = (Player)Bukkit.getPlayer(event.getName());
 									getInstance().getInvite().put(target.getName(), player.getName());
