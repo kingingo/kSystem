@@ -5,8 +5,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -34,6 +37,21 @@ public class CreativeListener extends kListener{
 		ev.setLine(1, ev.getLine(1).replaceAll("&", "§"));
 		ev.setLine(2, ev.getLine(2).replaceAll("&", "§"));
 		ev.setLine(3, ev.getLine(3).replaceAll("&", "§"));
+	}
+	
+//	@EventHandler
+//	public void book(PlayerEditBookEvent ev){
+//		
+//	}
+	
+	@EventHandler
+	public void PlayerItemConsume(PlayerItemConsumeEvent ev){
+		ev.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void splash(PotionSplashEvent ev){
+		ev.setCancelled(true);
 	}
 	
 	@EventHandler
