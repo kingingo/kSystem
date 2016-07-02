@@ -16,6 +16,7 @@ import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Command.Commands.CommandStats;
 import eu.epicpvp.kcore.Command.Commands.CommandWarp;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
+import eu.epicpvp.kcore.StatsManager.StatsManagerRepository;
 import eu.epicpvp.kcore.Util.UtilWorld;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +39,8 @@ public class GunGame extends Server{
 		super(instance,GroupTyp.GAME);
     	UtilWorld.LoadWorld(new WorldCreator("gungame"), new CleanroomChunkGenerator("64,WATER"));
 
-		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);
+//		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);
+    	this.statsManager=StatsManagerRepository.getStatsManager(GameType.GUNGAME);
 		this.kit=new CommandKit(this);
 		this.map=new CommandMap(this);
 		getCommandHandler().register(CommandKit.class, kit);
