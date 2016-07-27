@@ -21,8 +21,8 @@ import eu.epicpvp.kcore.Util.UtilWorld;
 import lombok.Getter;
 import lombok.Setter;
 
-public class GunGame extends Server{
-	
+public class GunGame extends Server {
+
 	@Getter
 	private CommandKit kit;
 	@Getter
@@ -34,29 +34,31 @@ public class GunGame extends Server{
 	private GunGameListener listener;
 	@Getter
 	private StatsManager statsManager;
-	
-	public GunGame(kServerSystem instance){
-		super(instance,GroupTyp.GAME);
-    	UtilWorld.LoadWorld(new WorldCreator("gungame"), new CleanroomChunkGenerator("64,WATER"));
 
-//		this.statsManager=new StatsManager(getInstance(), getInstance().getClient(), GameType.GUNGAME);
-    	this.statsManager=StatsManagerRepository.getStatsManager(GameType.GUNGAME);
-		this.kit=new CommandKit(this);
-		this.map=new CommandMap(this);
+	public GunGame(kServerSystem instance) {
+		super(instance, GroupTyp.GAME);
+		UtilWorld.LoadWorld(new WorldCreator("gungame"), new CleanroomChunkGenerator("64,WATER"));
+
+		this.statsManager = StatsManagerRepository.getStatsManager(GameType.GUNGAME);
+		this.kit = new CommandKit(this);
+		this.map = new CommandMap(this);
 		getCommandHandler().register(CommandKit.class, kit);
 		getCommandHandler().register(CommandMap.class, map);
 		getCommandHandler().register(CommandWarp.class, new CommandWarp(getTeleportManager()));
 		getCommandHandler().register(CommandGunGame.class, new CommandGunGame(this));
 		getCommandHandler().register(CommandStats.class, new CommandStats(getStatsManager()));
-		
-		this.listener=new GunGameListener(this);
+
+		this.listener = new GunGameListener(this);
 		new AACHack(ServerType.GUNGAME.getName());
 	}
 
-	public void onDisable(){
-		if(getMap().getNpc1()!=null)getMap().getNpc1().remove();
-		if(getMap().getNpc2()!=null)getMap().getNpc2().remove();
-		if(getMap().getNpc3()!=null)getMap().getNpc3().remove();
+	public void onDisable() {
+		if (getMap().getNpc1() != null)
+			getMap().getNpc1().remove();
+		if (getMap().getNpc2() != null)
+			getMap().getNpc2().remove();
+		if (getMap().getNpc3() != null)
+			getMap().getNpc3().remove();
 	}
-	
+
 }

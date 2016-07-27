@@ -15,7 +15,7 @@ import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 
-public class kServerSystem extends JavaPlugin{
+public class kServerSystem extends JavaPlugin {
 
 	@Getter
 	private MySQL mysql;
@@ -25,46 +25,46 @@ public class kServerSystem extends JavaPlugin{
 	private ServerType serverType;
 	private Updater updater;
 	private Server server;
-	
-	public void onEnable(){
+
+	public void onEnable() {
 		loadConfig();
-		this.client = UtilServer.createClient(this,ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server"));
-		this.mysql=UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
-		this.updater=UtilServer.createUpdater(this);
+		this.client = UtilServer.createClient(this, ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server"));
+		this.mysql = UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"), getConfig().getString("Config.MySQL.Password"), getConfig().getString("Config.MySQL.Host"), getConfig().getString("Config.MySQL.DB"), this);
+		this.updater = UtilServer.createUpdater(this);
 		new ListenerCMD(this);
-		
-		switch(getConfig().getString("Config.Server").toLowerCase()){
-		case "gungame": 
-			serverType=ServerType.GUNGAME;
-			this.server=new GunGame(this);
+
+		switch (getConfig().getString("Config.Server").toLowerCase()) {
+		case "gungame":
+			serverType = ServerType.GUNGAME;
+			this.server = new GunGame(this);
 			break;
-		case "creative": 
-			serverType=ServerType.CREATIVE;
-			this.server=new Creative(this);
+		case "creative":
+			serverType = ServerType.CREATIVE;
+			this.server = new Creative(this);
 			break;
 		default:
-			System.err.println("[kSystem]: ServerType nicht erkannt ("+getConfig().getString("Config.Server")+")");
+			System.err.println("[kSystem]: ServerType nicht erkannt (" + getConfig().getString("Config.Server") + ")");
 			UtilServer.disable();
 			System.exit(0);
 		}
-	
+
 		new AddonSun(this, null);
 	}
-	
-	public void onDisable(){
+
+	public void onDisable() {
 		this.server.onDisable();
 		UtilServer.disable();
 	}
-	
-	public void loadConfig(){
-	    getConfig().addDefault("Config.Server", "creative");
+
+	public void loadConfig() {
+		getConfig().addDefault("Config.Server", "creative");
 		getConfig().addDefault("Config.MySQL.Host", "NONE");
-	    getConfig().addDefault("Config.MySQL.DB", "NONE");
-	    getConfig().addDefault("Config.MySQL.User", "NONE");
-	    getConfig().addDefault("Config.MySQL.Password", "NONE");
-	    getConfig().addDefault("Config.Client.Host", "data.connect-handler.net");
-	    getConfig().addDefault("Config.Client.Port", 9051);
-	    getConfig().options().copyDefaults(true);
-	    saveConfig();
-	  }
+		getConfig().addDefault("Config.MySQL.DB", "NONE");
+		getConfig().addDefault("Config.MySQL.User", "NONE");
+		getConfig().addDefault("Config.MySQL.Password", "NONE");
+		getConfig().addDefault("Config.Client.Host", "data.connect-handler.net");
+		getConfig().addDefault("Config.Client.Port", 9051);
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+	}
 }

@@ -74,9 +74,9 @@
 			<version>0.9.2</version>
 		</dependency>
 		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>server</artifactId>
-			<version>8.8</version>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
