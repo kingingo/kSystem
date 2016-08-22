@@ -23,14 +23,13 @@ public class kServerSystem extends JavaPlugin {
 	private ClientWrapper client;
 	@Getter
 	private ServerType serverType;
-	private Updater updater;
 	private Server server;
 
 	public void onEnable() {
 		loadConfig();
+		UtilServer.setPluginInstance(this);
 		this.client = UtilServer.createClient(this, ClientType.OTHER, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), getConfig().getString("Config.Server"));
-		this.mysql = UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"), getConfig().getString("Config.MySQL.Password"), getConfig().getString("Config.MySQL.Host"), getConfig().getString("Config.MySQL.DB"), this);
-		this.updater = UtilServer.createUpdater(this);
+		this.mysql = UtilServer.createMySQL(getConfig().getString("Config.MySQL.User"), getConfig().getString("Config.MySQL.Password"), getConfig().getString("Config.MySQL.Host"), getConfig().getString("Config.MySQL.DB"));
 		new ListenerCMD(this);
 
 		switch (getConfig().getString("Config.Server").toLowerCase()) {

@@ -59,7 +59,7 @@ public class Server{
 		this.permissionManager=new PermissionManager(instance,type);
 		this.money=StatsManagerRepository.getStatsManager(GameType.Money);
 //		this.money=new StatsManager(getInstance(), getInstance().getClient(), GameType.Money);
-		this.commandHandler=UtilServer.createCommandHandler(getInstance());
+		this.commandHandler=UtilServer.getCommandHandler();
 		this.hologram=new Hologram(instance);
 		this.teleportManager=new TeleportManager(getCommandHandler(), getPermissionManager(), 3);
 		this.chatListener=new ChatListener(getInstance(), getPermissionManager());
@@ -88,7 +88,7 @@ public class Server{
 //		this.commandHandler.register(CommandStatsAdmin.class, new CommandStatsAdmin(statsManager));
 		
 		new BungeeCordFirewallListener(commandHandler);
-		UtilServer.createLagListener(getCommandHandler());
+		UtilServer.getLagListener();
 	}
 	
 	public void onDisable(){}
