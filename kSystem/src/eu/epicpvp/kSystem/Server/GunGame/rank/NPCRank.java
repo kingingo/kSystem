@@ -145,7 +145,10 @@ public class NPCRank {
 	}
 
 	public void remove() {
-		npc.remove();
+		//npc.remove();
 		nametag.remove();
+		if(packetDestroy != null)
+			for(Player p : Bukkit.getOnlinePlayers())
+				UtilPlayer.sendPacket(p, packetDestroy);
 	}
 }
