@@ -31,7 +31,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction
 
 @Getter
 public class NPCRank {
-	private static final AtomicInteger entityIds = new AtomicInteger(100000);
+	private static final AtomicInteger entityIds = new AtomicInteger(10000);
 	private static final DataWatcher defaultDataWatcher = new DataWatcher(null) {
 		public void a(PacketDataSerializer packetdataserializer) throws IOException {
 			packetdataserializer.writeByte(127); //No entries //May crash the client. We will see
