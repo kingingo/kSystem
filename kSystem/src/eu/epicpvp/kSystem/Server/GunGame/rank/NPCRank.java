@@ -127,8 +127,7 @@ public class NPCRank {
 	private void update(Player player){
 		if(packetDestroy != null)
 			UtilPlayer.sendPacket(player, packetDestroy);
-		if(player == null) //Dont need to add uuid if he is alredy in the tab
-			UtilPlayer.sendPacket(player, packetTabAdd);
+		UtilPlayer.sendPacket(player, packetTabAdd);
 		UtilServer.runSyncLater(()->{
 			UtilPlayer.sendPacket(player, packetSpawn);
 			for(PacketWrapper packet : packetsEquipment)
