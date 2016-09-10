@@ -140,8 +140,10 @@ public class NPCRank {
 	}
 
 	public void setPlayer(Player player) {
-		this.player = player;
-		update();
+		if (player != this.player) {
+			this.player = player;
+			update();
+		}
 	}
 
 	public void remove() {
