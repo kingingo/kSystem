@@ -44,6 +44,30 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.1</version>
+
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<minimizeJar>true</minimizeJar>
+					<artifactSet>
+						<includes>
+							<include>com.comphenix.packetwrapper:PacketWrapper</include>
+						</includes>
+					</artifactSet>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -62,6 +86,10 @@
 		<repository>
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
+		<repository>
+			<id>dmulloy2-repo</id>
+			<url>http://repo.dmulloy2.net/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -136,6 +164,18 @@
 			<artifactId>plotme</artifactId>
 			<version>R7</version>
             <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib</artifactId>
+			<version>3.6.5-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.comphenix.packetwrapper</groupId>
+			<artifactId>PacketWrapper</artifactId>
+			<version>1.8.7-R0.1-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

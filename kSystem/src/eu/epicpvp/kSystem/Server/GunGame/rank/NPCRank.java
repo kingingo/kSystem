@@ -1,21 +1,22 @@
 package eu.epicpvp.kSystem.Server.GunGame.rank;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.comphenix.packetwrapper.WrapperPlayServerEntityHeadRotation;
+import com.comphenix.protocol.ProtocolLibrary;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagType;
 import eu.epicpvp.kcore.PacketAPI.PacketWrapper;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperGameProfile;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutEntityDestroy;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutEntityEquipment;
-import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutEntityTeleport;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutNamedEntitySpawn;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutPlayerInfo;
-import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutRelEntityMoveLook;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPlayerInfoData;
 import eu.epicpvp.kcore.PacketAPI.UtilPacket;
 import eu.epicpvp.kcore.Util.UtilPlayer;
@@ -51,8 +52,7 @@ public class NPCRank {
 
 	private int entityId;
 	private WrapperPacketPlayOutNamedEntitySpawn packetSpawn;
-	private WrapperPacketPlayOutEntityTeleport packetTeleport;
-	private WrapperPacketPlayOutRelEntityMoveLook packetRelEntityMoveLook;
+	private WrapperPlayServerEntityHeadRotation packetHeadRoation;
 	private WrapperPacketPlayOutEntityDestroy packetDestroy;
 	private WrapperPacketPlayOutEntityEquipment[] packetsEquipment;
 	private WrapperPacketPlayOutPlayerInfo packetTabAdd;
@@ -72,13 +72,9 @@ public class NPCRank {
 		loc.setX(blockVector.getX() + .5);
 		loc.setY(blockVector.getY() + .5);
 		loc.setZ(blockVector.getZ() + .5);
-		packetTeleport = new WrapperPacketPlayOutEntityTeleport();
-		packetTeleport.setLocation(loc);
-		packetTeleport.setEntityID(entityId);
-		packetTeleport.setOnGround(true);
 
-		packetRelEntityMoveLook = new WrapperPacketPlayOutRelEntityMoveLook(entityId, (byte) 0, (byte) 0, (byte) 0,
-				UtilPacket.toPackedByte(loc.getYaw()), UtilPacket.toPackedByte(loc.getPitch()), true);
+		packetHeadRoation.setEntityID(entityId);
+		packetHeadRoation.setHeadYaw(UtilPacket.toPackedByte(loc.getYaw()));
 
 		packetSpawn = new WrapperPacketPlayOutNamedEntitySpawn();
 		packetSpawn.setLocation(loc);
@@ -147,8 +143,11 @@ public class NPCRank {
 		UtilPlayer.sendPacket(player, packetTabAdd);
 		UtilServer.runSyncLater(() -> {
 			UtilPlayer.sendPacket(player, packetSpawn);
-			UtilPlayer.sendPacket(player, packetTeleport);
-			UtilPlayer.sendPacket(player, packetRelEntityMoveLook); //required for head rotation
+			try {
+				ProtocolLibrary.getProtocolManager().sendServerPacket(player, packetHeadRoation.getHandle());
+			} catch (InvocationTargetException ex) {
+				throw new RuntimeException(ex);
+			}
 			for (PacketWrapper packet : packetsEquipment)
 				UtilPlayer.sendPacket(player, packet);
 			if (player != null)
