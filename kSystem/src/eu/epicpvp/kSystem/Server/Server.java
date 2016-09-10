@@ -30,6 +30,7 @@ import eu.epicpvp.kcore.Listener.Chat.ChatListener;
 import eu.epicpvp.kcore.Permission.PermissionManager;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
 import eu.epicpvp.kcore.StatsManager.StatsManagerRepository;
+import eu.epicpvp.kcore.TeleportManager.TeleportCheck;
 import eu.epicpvp.kcore.TeleportManager.TeleportManager;
 import eu.epicpvp.kcore.UserDataConfig.UserDataConfig;
 import eu.epicpvp.kcore.Util.UtilServer;
@@ -53,7 +54,7 @@ public class Server{
 	private ChatListener chatListener;
 	@Getter
 	private UserDataConfig userData;
-	
+
 	public Server(kServerSystem instance,GroupTyp type){
 		this.instance=instance;
 		this.permissionManager=new PermissionManager(instance,type);
@@ -61,10 +62,10 @@ public class Server{
 //		this.money=new StatsManager(getInstance(), getInstance().getClient(), GameType.Money);
 		this.commandHandler=UtilServer.getCommandHandler();
 		this.hologram=new Hologram(instance);
-		this.teleportManager=new TeleportManager(getCommandHandler(), getPermissionManager(), 3);
+		this.teleportManager=new TeleportManager(getCommandHandler(), getPermissionManager(), TeleportCheck.NEAR);
 		this.chatListener=new ChatListener(getInstance(), getPermissionManager());
 		this.userData=new UserDataConfig(getInstance());
-		
+
 		this.commandHandler.register(CommandTp.class, new CommandTp());
 		this.commandHandler.register(CommandTpHere.class, new CommandTpHere());
 		this.commandHandler.register(CommandVanish.class, new CommandVanish(instance));
@@ -86,10 +87,10 @@ public class Server{
 		this.commandHandler.register(CommandToggle.class, new CommandToggle(instance));
 		this.commandHandler.register(CommandLocations.class, new CommandLocations(instance));
 //		this.commandHandler.register(CommandStatsAdmin.class, new CommandStatsAdmin(statsManager));
-		
+
 		new BungeeCordFirewallListener(commandHandler);
 		UtilServer.getLagListener();
 	}
-	
+
 	public void onDisable(){}
 }
