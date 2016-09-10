@@ -15,6 +15,7 @@ import eu.epicpvp.kcore.PacketAPI.PacketWrapper;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperGameProfile;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutEntityDestroy;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutEntityEquipment;
+import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutEntityTeleport;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutNamedEntitySpawn;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutPlayerInfo;
 import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPlayerInfoData;
@@ -27,7 +28,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BlockVector;
 
 import net.minecraft.server.v1_8_R3.DataWatcher;
 import net.minecraft.server.v1_8_R3.PacketDataSerializer;
@@ -53,6 +53,7 @@ public class NPCRank {
 	private int entityId;
 	private WrapperPacketPlayOutNamedEntitySpawn packetSpawn;
 	private WrapperPlayServerEntityHeadRotation packetHeadRoation;
+	private WrapperPacketPlayOutEntityTeleport packetTeleport;
 	private WrapperPacketPlayOutEntityDestroy packetDestroy;
 	private WrapperPacketPlayOutEntityEquipment[] packetsEquipment;
 	private WrapperPacketPlayOutPlayerInfo packetTabAdd;
@@ -68,10 +69,13 @@ public class NPCRank {
 		UUID uuid = UUID.randomUUID();
 		entityId = entityIds.addAndGet(1);
 		Location loc = location.clone();
-		BlockVector blockVector = loc.toVector().toBlockVector();
-		loc.setX(blockVector.getX() + .5);
-		loc.setY(blockVector.getY() + .5);
-		loc.setZ(blockVector.getZ() + .5);
+		loc.setX(((int) loc.getX()) + .5);
+		loc.setZ(((int) loc.getZ()) - .5);
+
+		packetTeleport = new WrapperPacketPlayOutEntityTeleport();
+		packetTeleport.setLocation(loc);
+		packetTeleport.setEntityID(entityId);
+		packetTeleport.setOnGround(true);
 
 		packetHeadRoation = new WrapperPlayServerEntityHeadRotation();
 		packetHeadRoation.setEntityID(entityId);
@@ -144,6 +148,7 @@ public class NPCRank {
 		UtilPlayer.sendPacket(player, packetTabAdd);
 		UtilServer.runSyncLater(() -> {
 			UtilPlayer.sendPacket(player, packetSpawn);
+			UtilPlayer.sendPacket(player, packetTeleport);
 			try {
 				ProtocolLibrary.getProtocolManager().sendServerPacket(player, packetHeadRoation.getHandle());
 			} catch (InvocationTargetException ex) {
