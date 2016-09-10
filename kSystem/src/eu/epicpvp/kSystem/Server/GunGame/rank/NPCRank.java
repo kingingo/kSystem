@@ -73,6 +73,7 @@ public class NPCRank {
 		loc.setY(blockVector.getY() + .5);
 		loc.setZ(blockVector.getZ() + .5);
 
+		packetHeadRoation = new WrapperPlayServerEntityHeadRotation();
 		packetHeadRoation.setEntityID(entityId);
 		packetHeadRoation.setHeadYaw(UtilPacket.toPackedByte(loc.getYaw()));
 
