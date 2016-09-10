@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import eu.epicpvp.kcore.Command.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -48,7 +49,7 @@ public class CommandMap extends kListener implements CommandExecutor {
 	private String lastMap;
 	@Getter
 	@Setter
-	private int time = 2;
+	private int time = 1;
 	@Getter
 	private HashMap<String, Location> maps;
 	private ArrayList<kSort<String>> ranking;
@@ -136,7 +137,9 @@ public class CommandMap extends kListener implements CommandExecutor {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void checkNPC(UpdateEvent ev) {
 		if (ev.getType() == UpdateType.SEC) {
-			updateNPCS();
+			if (lastMap != null) {
+				updateNPCS();
+			}
 		}
 	}
 
@@ -244,7 +247,7 @@ public class CommandMap extends kListener implements CommandExecutor {
 		}
 	}
 
-	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "map", sender = Sender.PLAYER)
+	@CommandHandler.Command(command = "map", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2, String[] args) {
 		Player player = (Player) sender;
 
