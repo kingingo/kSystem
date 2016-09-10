@@ -14,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
@@ -58,14 +59,14 @@ public class CommandMap extends kListener implements CommandExecutor {
 	private NPCRank npc2;
 	@Getter
 	private NPCRank npc3;
-	
+
 	@SuppressWarnings("static-access")
 	public CommandMap(GunGame instance) {
 		super(instance.getInstance(), "CommandMap");
 
 		this.instance = instance;
 		this.ranking = new ArrayList<>();
-		this.config = new kConfig(new File("plugins" + File.separator + instance.getInstance().getPlugin(instance.getInstance().getClass()).getName() + File.separator + "maps.yml"));
+		this.config = new kConfig(new File(instance.getInstance().getDataFolder(), "maps.yml"));
 
 		this.maps = new HashMap<>();
 		for (String map : config.getPathList("maps").keySet()) {
@@ -132,7 +133,7 @@ public class CommandMap extends kListener implements CommandExecutor {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void checkNPC(UpdateEvent ev) {
 		if (ev.getType() == UpdateType.SEC) {
 			updateNPCS();
