@@ -33,6 +33,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction
 public class NPCRank {
 	private static final AtomicInteger entityIds = new AtomicInteger(10000);
 	private static final DataWatcher defaultDataWatcher = new DataWatcher(null) {
+		@Override
 		public void a(PacketDataSerializer packetdataserializer) throws IOException {
 			packetdataserializer.writeByte(127); //No entries //May crash the client. We will see
 		}
@@ -69,15 +70,15 @@ public class NPCRank {
 
 		WrapperGameProfile profile = player != null ? new WrapperGameProfile(UtilPlayer.getCraftPlayer(player).getHandle().getProfile()) : new WrapperGameProfile(uuid, "Nobody");
 		profile.setUUID(uuid);
-		WrapperPlayerInfoData npcData = new WrapperPlayerInfoData(packetTabAdd, profile, player == null ? "§aNobody" : "§b" + player.getName());
 
 		packetTabAdd = new WrapperPacketPlayOutPlayerInfo(new PacketPlayOutPlayerInfo());
+		WrapperPlayerInfoData npcData = new WrapperPlayerInfoData(packetTabAdd, profile, player == null ? "§aNobody" : "§b" + player.getName());
 		packetTabAdd.setEnumPlayerInfoAction(EnumPlayerInfoAction.ADD_PLAYER);
-		packetTabAdd.setEntries(Arrays.asList(new WrapperPlayerInfoData[] { npcData }));
+		packetTabAdd.setEntries(Arrays.asList(npcData));
 
 		packetTabRemove = new WrapperPacketPlayOutPlayerInfo(new PacketPlayOutPlayerInfo());
 		packetTabRemove.setEnumPlayerInfoAction(EnumPlayerInfoAction.REMOVE_PLAYER);
-		packetTabRemove.setEntries(Arrays.asList(new WrapperPlayerInfoData[] { npcData }));
+		packetTabRemove.setEntries(Arrays.asList(npcData));
 
 		net.minecraft.server.v1_8_R3.ItemStack[] equipment = player != null ? UtilPlayer.getCraftPlayer(player).getHandle().getEquipment() : new net.minecraft.server.v1_8_R3.ItemStack[1];
 		packetsEquipment = new WrapperPacketPlayOutEntityEquipment[equipment.length];
@@ -98,7 +99,7 @@ public class NPCRank {
 		//		}
 
 		if (nametag == null) {
-			nametag = new NameTagMessage(NameTagType.PACKET, location.clone().add(0, 2.3, 0), new String[] { "Platz -1" });
+			nametag = new NameTagMessage(NameTagType.PACKET, location.clone().add(0, 2.3, 0), "Platz -1");
 		}
 		if (player != null)
 			nametag.setLines(new String[] { "§c§lPlatz " + rank + " §7| §aLevel: §b" + player.getLevel() });
@@ -119,7 +120,7 @@ public class NPCRank {
 		for(Player p : Bukkit.getOnlinePlayers()){
 			update(p);
 		}
-		
+
 		packetDestroy = new WrapperPacketPlayOutEntityDestroy(entityId);
 	}
 
@@ -138,7 +139,7 @@ public class NPCRank {
 				}, 500);
 		}, 250);
 	}
-	
+
 	public void setPlayer(Player player) {
 		this.player = player;
 		update();
