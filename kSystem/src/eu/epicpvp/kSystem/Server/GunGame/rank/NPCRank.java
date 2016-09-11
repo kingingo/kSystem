@@ -117,7 +117,7 @@ public class NPCRank {
 //		}
 
 		if (nametag == null) {
-			nametag = new NameTagMessage(NameTagType.PACKET, loc.add(0, 2.3, 0), "Platz -1");
+			nametag = new NameTagMessage(NameTagType.PACKET, loc.add(0, 2.5, 0), "Platz -1");
 		}
 		if (player != null)
 			nametag.setLines(new String[]{"§c§lPlatz " + rank + " §7| §aLevel: §b" + player.getLevel()});
