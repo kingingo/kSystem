@@ -96,12 +96,12 @@ public class CommandMap extends kListener implements CommandExecutor {
 						continue;
 				}
 
-				if (npc1 != null && npc1.getNpc() != null && npc1.getNpc().getEntityId() == e.getEntityId())
-					continue;
-				if (npc2 != null && npc2.getNpc() != null && npc2.getNpc().getEntityId() == e.getEntityId())
-					continue;
-				if (npc3 != null && npc3.getNpc() != null && npc3.getNpc().getEntityId() == e.getEntityId())
-					continue;
+//				if (npc1 != null && npc1.getNpc() != null && npc1.getNpc().getEntityId() == e.getEntityId())
+//					continue;
+//				if (npc2 != null && npc2.getNpc() != null && npc2.getNpc().getEntityId() == e.getEntityId())
+//					continue;
+//				if (npc3 != null && npc3.getNpc() != null && npc3.getNpc().getEntityId() == e.getEntityId())
+//					continue;
 
 				e.remove();
 			}

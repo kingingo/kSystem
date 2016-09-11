@@ -26,7 +26,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.v1_8_R3.DataWatcher;
@@ -43,7 +42,7 @@ public class NPCRank {
 		}
 	};
 
-	private ArmorStand npc;
+//	private ArmorStand npc;
 	@Setter
 	private Location location;
 	private Player player;
