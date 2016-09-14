@@ -29,6 +29,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.v1_8_R3.DataWatcher;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketDataSerializer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 
@@ -82,11 +83,12 @@ public class NPCRank {
 
 		packetSpawn = new WrapperPacketPlayOutNamedEntitySpawn();
 		packetSpawn.setLocation(loc);
-		packetSpawn.setDataWatcher(player != null ? UtilPlayer.getCraftPlayer(player).getHandle().getDataWatcher() : defaultDataWatcher);
+		EntityPlayer entityPlayer = UtilPlayer.getCraftPlayer(player).getHandle();
+		packetSpawn.setDataWatcher(player != null ? entityPlayer.getDataWatcher() : defaultDataWatcher);
 		packetSpawn.setEntityID(entityId);
 		packetSpawn.setUUID(uuid);
 
-		WrapperGameProfile profile = player != null ? new WrapperGameProfile(UtilPlayer.getCraftPlayer(player).getHandle().getProfile()) : new WrapperGameProfile(uuid, "Nobody");
+		WrapperGameProfile profile = player != null ? new WrapperGameProfile(entityPlayer.getProfile()) : new WrapperGameProfile(uuid, "Nobody");
 		profile.setUUID(uuid);
 
 		packetTabAdd = new WrapperPacketPlayOutPlayerInfo();
@@ -98,10 +100,13 @@ public class NPCRank {
 		packetTabRemove.setEnumPlayerInfoAction(EnumPlayerInfoAction.REMOVE_PLAYER);
 		packetTabRemove.setEntries(Arrays.asList(npcData));
 
-		net.minecraft.server.v1_8_R3.ItemStack[] equipment = player != null ? UtilPlayer.getCraftPlayer(player).getHandle().getEquipment() : new net.minecraft.server.v1_8_R3.ItemStack[1];
-		packetsEquipment = new WrapperPacketPlayOutEntityEquipment[equipment.length];
-		for (int i = 0; i < equipment.length; i++)
-			packetsEquipment[i] = new WrapperPacketPlayOutEntityEquipment(entityId, i, equipment[i]);
+		net.minecraft.server.v1_8_R3.ItemStack[] equipment = player != null ? entityPlayer.getEquipment() : new net.minecraft.server.v1_8_R3.ItemStack[1];
+		packetsEquipment = new WrapperPacketPlayOutEntityEquipment[equipment.length + 1];
+		packetsEquipment[0] = new WrapperPacketPlayOutEntityEquipment(entityId, 0, entityPlayer.inventory.getItemInHand());
+		for (int i = 0; i < equipment.length; i++) {
+			int packetSlot = i + 1;
+			packetsEquipment[packetSlot] = new WrapperPacketPlayOutEntityEquipment(entityId, packetSlot, equipment[i]);
+		}
 
 //		if (npc == null || npc.isDead()) {
 //			if (!location.getChunk().isLoaded())
