@@ -63,7 +63,7 @@ public class Server{
 		this.commandHandler=UtilServer.getCommandHandler();
 		this.hologram=new Hologram(instance);
 		this.teleportManager=new TeleportManager(getCommandHandler(), getPermissionManager(), TeleportCheck.NEAR);
-		this.chatListener=new ChatListener(getInstance(), getPermissionManager());
+		this.chatListener=new ChatListener();
 		this.userData=new UserDataConfig(getInstance());
 
 		this.commandHandler.register(CommandTp.class, new CommandTp());
