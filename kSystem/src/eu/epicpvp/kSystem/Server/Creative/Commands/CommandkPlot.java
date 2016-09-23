@@ -28,6 +28,9 @@ public class CommandkPlot implements CommandExecutor{
 		Player player = (Player)sender;
 		
 		if(args.length==0){
+			if(instance == null)System.out.println("INSTANCE == NULL");
+			if(instance.getCreativeInventoryHandler() == null)System.out.println("instance.getCreativeInventoryHandler() == NULL");
+			
 			instance.getCreativeInventoryHandler().open(player);
 		}else{
 			if(args[0].equalsIgnoreCase("accept")&&args.length==2){

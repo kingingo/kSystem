@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 
 import com.intellectualcrafters.plot.api.PlotAPI;
-
 import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.kSystem.kServerSystem;
@@ -102,7 +101,6 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandTag.class, new CommandTag());
 		getCommandHandler().register(CommandNacht.class, new CommandNacht());
 		getCommandHandler().register(CommandWarp.class, new CommandWarp(UtilServer.getTeleportManager()));
-		getCommandHandler().register(CommandSpawn.class, new CommandSpawn(UtilServer.getTeleportManager()));
 		getCommandHandler().register(CommandClearInventory.class, new CommandClearInventory());
 		getCommandHandler().register(CommandInvsee.class, new CommandInvsee(UtilServer.getMysql()));
 		getCommandHandler().register(CommandEnderchest.class, new CommandEnderchest(UtilServer.getMysql()));
@@ -131,6 +129,7 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandSuffix.class, new CommandSuffix(UtilServer.getUserData()));
 		getCommandHandler().register(CommandPacketToggle.class, new CommandPacketToggle(instance));
 		getCommandHandler().register(CommandK.class, new CommandK());
+		getCommandHandler().register(CommandSpawn.class, new CommandSpawn(UtilServer.getTeleportManager()));
 
 		this.wing = new WingShop(instance);
 		new CreativeListener(this);
