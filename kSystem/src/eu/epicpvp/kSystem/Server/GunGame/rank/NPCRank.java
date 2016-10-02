@@ -29,9 +29,9 @@ public class NPCRank {
 		update();
 	}
 
-	private void update(){
+	private void update() {
 		if (npc == null || npc.isDead()) {
-			if(!location.getChunk().isLoaded())
+			if (!location.getChunk().isLoaded())
 				location.getChunk().load();
 			npc = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 			npc.setArms(true);
@@ -44,19 +44,17 @@ public class NPCRank {
 		}
 
 		if (nametag == null) {
-			nametag = new NameTagMessage(NameTagType.PACKET, location.clone().add(0, 2.3, 0), new String[] { "§c§lPlatz "+rank });
+			nametag = new NameTagMessage(NameTagType.PACKET, location.clone().add(0, 2.3, 0), new String[]{"§c§lPlatz " + rank});
 		}
 		nametag.send();
 
-		if(this.player == null){
+		if (this.player == null) {
 			npc.setHelmet(UtilItem.Head(null));
 			npc.setCustomName("§aNo player");
-		}
-		else
-		{
+		} else {
 			LoadedPlayer lplayer = UtilServer.getClient().getPlayerAndLoad(player.getName());
 			npc.setHelmet(UtilItem.Head(player.getName()));
-			npc.setCustomName("§e§l"+lplayer.getNickname()+" §7|§7 Lvl. §a" + player.getLevel());
+			npc.setCustomName("§e§l" + lplayer.getNickname() + " §7|§7 Lvl. §a" + player.getLevel());
 		}
 	}
 
