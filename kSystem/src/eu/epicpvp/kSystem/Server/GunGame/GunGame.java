@@ -1,8 +1,8 @@
 package eu.epicpvp.kSystem.Server.GunGame;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.ServerType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandGunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandKit;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandMap;

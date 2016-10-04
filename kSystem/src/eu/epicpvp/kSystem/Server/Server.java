@@ -1,7 +1,7 @@
 package eu.epicpvp.kSystem.Server;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kcore.Command.CommandHandler;
 import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;

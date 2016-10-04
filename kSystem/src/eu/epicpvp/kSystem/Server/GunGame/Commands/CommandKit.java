@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Events.PlayerGunGameLevelUpEvent;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;

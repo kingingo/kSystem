@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.epicpvp.datenclient.client.ClientWrapper;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.gamestats.ServerType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.Creative.Creative;
 import eu.epicpvp.kSystem.Server.GunGame.GunGame;
