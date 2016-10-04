@@ -18,7 +18,7 @@ import com.intellectualcrafters.plot.api.PlotAPI;
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Inventory.InventoryPageBase;
 import eu.epicpvp.kcore.Inventory.Inventory.InventoryYesNo;
@@ -41,7 +41,7 @@ public class InviteButton extends ButtonMultiCopy{
 			return plots;
 		};
 	});
-	
+
 	public InviteButton(InventoryPageBase page,int slot,int index, PlotAPI api) {
 		super(new ButtonForMultiButtonsCopy[]{new ButtonForMultiButtonsCopy(page, slot+9, new Click(){
 
@@ -49,12 +49,12 @@ public class InviteButton extends ButtonMultiCopy{
 			public void onClick(Player player, ActionType type, Object object) {
 				if(((ItemStack)object).getTypeId() == 101)return;
 				PlotPlayer pplayer = api.wrapPlayer(player);
-				
-				
+
+
 				if(plotCache!=null){
 					try {
 						ArrayList<Plot> plots = plotCache.get(player.getUniqueId());
-						
+
 						if(plots.size() > index){
 							player.closeInventory();
 							pplayer.teleport(plots.get(index).getHome());
@@ -62,11 +62,11 @@ public class InviteButton extends ButtonMultiCopy{
 					} catch (ExecutionException e) {
 						e.printStackTrace();
 					}
-					
+
 				}
 			}
-			
-		}, 
+
+		},
 		UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §6Teleportiere dich zu der §eInsel§6."),
 		new Click(){
 
@@ -77,7 +77,7 @@ public class InviteButton extends ButtonMultiCopy{
 					ArrayList<Plot> plots = plotCache.get(player.getUniqueId());
 					if(plots.size() > index){
 						Plot plot = plots.get(index);
-						LoadedPlayer loadedplayer = UtilServer.getClient().getPlayerAndLoad(((UUID)plot.getOwners().toArray()[0]));		
+						LoadedPlayer loadedplayer = UtilServer.getClient().getPlayerAndLoad(((UUID)plot.getOwners().toArray()[0]));
 						((InventoryPageBase)object).setItem(slot, UtilItem.RenameItem(UtilItem.Head(loadedplayer.getName()), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 "+loadedplayer.getName()+"'s PLot"));
 						return;
 					}
@@ -87,7 +87,7 @@ public class InviteButton extends ButtonMultiCopy{
 				((InventoryPageBase)object).setItem(slot, UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§6 Nicht belegt."));
 				((InventoryPageBase)object).setItem(slot+9, UtilItem.RenameItem(new ItemStack(101), " "));
 			}
-			
+
 		}),
 				new ButtonForMultiButtonsCopy(page, slot+18, new Click(){
 
@@ -105,12 +105,12 @@ public class InviteButton extends ButtonMultiCopy{
 										Plot plot = plots.get(index);
 										String playername = UtilServer.getClient().getPlayerAndLoad(((UUID)plot.getOwners().toArray()[0])).getName();
 										player.sendMessage(TranslationHandler.getPrefixAndText(player, "SKYBLOCK_MEMBER_LEAVE_SELF",playername));
-											
+
 										if(UtilPlayer.isOnline(playername)){
 											Player owner = Bukkit.getPlayer(playername);
 											owner.sendMessage(TranslationHandler.getPrefixAndText(owner, "SKYBLOCK_MEMBER_LEAVE",player.getName()));
 										}
-											
+
 										plot.removeMember(player.getUniqueId());
 										plotCache.refresh(player.getUniqueId());
 										player.closeInventory();
@@ -119,20 +119,20 @@ public class InviteButton extends ButtonMultiCopy{
 									e.printStackTrace();
 								}
 							}
-							
+
 						}, new Click(){
 
 							@Override
 							public void onClick(Player player, ActionType type, Object object) {
 								player.closeInventory();
 							}
-							
+
 						});
 						UtilInv.getBase().addAnother(q);
 						player.openInventory(q);
 					}
-					
-				}, 
+
+				},
 				UtilItem.RenameItem(new ItemStack(351,1,(byte)1), "§7"+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §cKlicke, um die Insel zu verlassen."),
 				new Click(){
 
@@ -149,7 +149,7 @@ public class InviteButton extends ButtonMultiCopy{
 						}
 						((InventoryPageBase)object).setItem(slot+18, UtilItem.RenameItem(new ItemStack(101), " "));
 					}
-					
+
 				})});
 	}
 

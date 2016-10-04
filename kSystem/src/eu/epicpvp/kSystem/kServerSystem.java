@@ -2,7 +2,7 @@ package eu.epicpvp.kSystem;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import dev.wolveringer.client.ClientWrapper;
+import eu.epicpvp.datenclient.client.ClientWrapper;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.Server;
@@ -11,7 +11,6 @@ import eu.epicpvp.kSystem.Server.GunGame.GunGame;
 import eu.epicpvp.kcore.Addons.AddonSun;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
-import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 

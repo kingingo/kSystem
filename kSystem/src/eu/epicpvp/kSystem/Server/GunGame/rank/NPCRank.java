@@ -1,6 +1,6 @@
 package eu.epicpvp.kSystem.Server.GunGame.rank;
 
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagType;
 import eu.epicpvp.kcore.Util.UtilItem;
