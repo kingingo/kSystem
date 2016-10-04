@@ -4,9 +4,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
+import eu.epicpvp.kSystem.Server.GunGame.GunGame;
+import eu.epicpvp.kSystem.Server.GunGame.rank.NPCRank;
 import eu.epicpvp.kcore.Command.Admin.CommandVanish;
 import eu.epicpvp.kcore.Command.CommandHandler;
+import eu.epicpvp.kcore.Command.CommandHandler.Sender;
+import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Lists.kSort;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
+import eu.epicpvp.kcore.Update.Event.UpdateEvent;
+import eu.epicpvp.kcore.Update.UpdateType;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilTime;
+import eu.epicpvp.kcore.kConfig.kConfig;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -18,21 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.scoreboard.DisplaySlot;
-
-import eu.epicpvp.kSystem.Server.GunGame.GunGame;
-import eu.epicpvp.kSystem.Server.GunGame.rank.NPCRank;
-import eu.epicpvp.kcore.Command.CommandHandler.Sender;
-import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.Lists.kSort;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
-import eu.epicpvp.kcore.Update.UpdateType;
-import eu.epicpvp.kcore.Update.Event.UpdateEvent;
-import eu.epicpvp.kcore.Util.UtilScoreboard;
-import eu.epicpvp.kcore.Util.UtilServer;
-import eu.epicpvp.kcore.Util.UtilTime;
-import eu.epicpvp.kcore.kConfig.kConfig;
-import lombok.Getter;
-import lombok.Setter;
 
 public class CommandMap extends kListener implements CommandExecutor {
 	@Getter
@@ -76,7 +76,6 @@ public class CommandMap extends kListener implements CommandExecutor {
 				instance.setSpawn(config.getLocation("maps." + map.toLowerCase() + ".Spawn"));
 			getMaps().put(map.toLowerCase(), config.getLocation("maps." + map.toLowerCase() + ".Spawn"));
 		}
-
 	}
 
 	public void clear() {
@@ -112,19 +111,19 @@ public class CommandMap extends kListener implements CommandExecutor {
 	public void updateNPCS() {
 		ranking.clear();
 		ArrayList<Player> invisible = CommandVanish.getInvisible();
-		for (Player player : UtilServer.getPlayers()) {
-			if (!invisible.contains(player)) {
-				ranking.add(new kSort<>(player.getName(), player.getLevel()));
-			}
-		}
+		ranking.addAll(
+				UtilServer.getPlayers().stream()
+						.filter(player -> !invisible.contains(player))
+						.map(player -> new kSort<>(player.getName(), player.getLevel()))
+						.collect(Collectors.toList()));
 
 		Collections.sort(ranking, kSort.DESCENDING);
 		clear();
-		if(npc1 == null)
+		if (npc1 == null)
 			npc1 = new NPCRank(getNPCL1(), 1);
-		if(npc2 == null)
+		if (npc2 == null)
 			npc2 = new NPCRank(getNPCL2(), 2);
-		if(npc3 == null)
+		if (npc3 == null)
 			npc3 = new NPCRank(getNPCL3(), 3);
 		if (!ranking.isEmpty()) {
 			if (ranking.size() >= 1) {
@@ -160,15 +159,14 @@ public class CommandMap extends kListener implements CommandExecutor {
 		return config.getLocation("maps." + lastMap.toLowerCase() + ".NPC1");
 	}
 
-	String lastbtime;
-	String btime;
+	private String lastbtime;
 
 	@EventHandler
 	public void next(UpdateEvent ev) {
 		if (ev.getType() == UpdateType.SEC && !this.maps.isEmpty()) {
 			this.time--;
 
-			btime = UtilTime.formatSeconds(time);
+			String btime = UtilTime.formatSeconds(time);
 			for (Player player : UtilServer.getPlayers()) {
 				if (player.getScoreboard() != null) {
 					if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null) {
@@ -183,71 +181,71 @@ public class CommandMap extends kListener implements CommandExecutor {
 			}
 			lastbtime = btime;
 			switch (this.time) {
-			case 5:
-				UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
-				break;
-			case 4:
-				UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
-				break;
-			case 3:
-				UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
-				break;
-			case 2:
-				UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
-				break;
-			case 1:
-				UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
-				break;
-			case 0:
-				if (nextMap == null) {
-					this.nextMap = (String) this.maps.keySet().toArray()[this.counter];
-					this.counter++;
+				case 5:
+					UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
+					break;
+				case 4:
+					UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
+					break;
+				case 3:
+					UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
+					break;
+				case 2:
+					UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
+					break;
+				case 1:
+					UtilServer.broadcastLanguage("GUNGAME_MAP_COUNTING", this.time);
+					break;
+				case 0:
+					if (nextMap == null) {
+						this.nextMap = (String) this.maps.keySet().toArray()[this.counter];
+						this.counter++;
 
-					if (this.counter == this.maps.size()) {
-						this.counter = 0;
+						if (this.counter == this.maps.size()) {
+							this.counter = 0;
+						}
 					}
-				}
-				this.lastMap = nextMap;
+					this.lastMap = nextMap;
 
-				this.time = 60 * 30;
-				if (npc1 != null) {
-					npc1.remove();
-				}
-				if (npc2 != null) {
-					npc2.remove();
-				}
-				if (npc3 != null) {
-					npc3.remove();
-				}
-				npc1 = null;
-				npc2 = null;
-				npc3 = null;
-				this.maps.get(this.nextMap).getChunk().load();
-				getInstance().setSpawn(this.maps.get(this.nextMap));
-				for (Player player : UtilServer.getPlayers())
-					player.teleport(getInstance().getSpawn());
-
-				clear();
-				UtilServer.getLagMeter().unloadChunks(null, null);
-
-				if (UtilServer.getGemsShop() != null) {
-					if (config.contains("maps." + nextMap.toLowerCase() + ".GemShop")) {
-						UtilServer.getGemsShop().setCreature(config.getLocation("maps." + nextMap.toLowerCase() + ".GemShop"));
+					this.time = 60 * 30;
+					if (npc1 != null) {
+						npc1.remove();
 					}
-				}
-
-				if (UtilServer.getDeliveryPet() != null) {
-					if (config.contains("maps." + nextMap.toLowerCase() + ".DeliveryPet")) {
-						UtilServer.getDeliveryPet().setLocation(config.getLocation("maps." + nextMap.toLowerCase() + ".DeliveryPet"));
-						UtilServer.getDeliveryPet().getEntity().remove();
-						UtilServer.getDeliveryPet().getJockey().remove();
-						UtilServer.getDeliveryPet().createPet();
+					if (npc2 != null) {
+						npc2.remove();
 					}
-				}
-				this.nextMap = null;
-				updateNPCS();
-				UtilServer.broadcastLanguage("GUNGAME_MAP_CHANGE");
-				break;
+					if (npc3 != null) {
+						npc3.remove();
+					}
+					npc1 = null;
+					npc2 = null;
+					npc3 = null;
+					this.maps.get(this.nextMap).getChunk().load();
+					getInstance().setSpawn(this.maps.get(this.nextMap));
+					for (Player player : UtilServer.getPlayers())
+						player.teleport(getInstance().getSpawn());
+
+					clear();
+					UtilServer.getLagMeter().unloadChunks(null, null);
+
+					if (UtilServer.getGemsShop() != null) {
+						if (config.contains("maps." + nextMap.toLowerCase() + ".GemShop")) {
+							UtilServer.getGemsShop().setCreature(config.getLocation("maps." + nextMap.toLowerCase() + ".GemShop"));
+						}
+					}
+
+					if (UtilServer.getDeliveryPet() != null) {
+						if (config.contains("maps." + nextMap.toLowerCase() + ".DeliveryPet")) {
+							UtilServer.getDeliveryPet().setLocation(config.getLocation("maps." + nextMap.toLowerCase() + ".DeliveryPet"));
+							UtilServer.getDeliveryPet().getEntity().remove();
+							UtilServer.getDeliveryPet().getJockey().remove();
+							UtilServer.getDeliveryPet().createPet();
+						}
+					}
+					this.nextMap = null;
+					updateNPCS();
+					UtilServer.broadcastLanguage("GUNGAME_MAP_CHANGE");
+					break;
 			}
 		}
 	}

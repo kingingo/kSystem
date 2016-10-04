@@ -1,16 +1,13 @@
 package eu.epicpvp.kSystem.Server.GunGame;
 
-import org.bukkit.Location;
-import org.bukkit.WorldCreator;
-
 import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.ServerType;
-import eu.epicpvp.kSystem.kServerSystem;
-import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandGunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandKit;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandMap;
+import eu.epicpvp.kSystem.Server.Server;
+import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kcore.AACHack.AACHack;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Command.Commands.CommandStats;
@@ -20,6 +17,8 @@ import eu.epicpvp.kcore.StatsManager.StatsManagerRepository;
 import eu.epicpvp.kcore.Util.UtilWorld;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 
 public class GunGame extends Server {
 
@@ -52,6 +51,7 @@ public class GunGame extends Server {
 		new AACHack(ServerType.GUNGAME.getName());
 	}
 
+	@Override
 	public void onDisable() {
 		if (getMap().getNpc1() != null)
 			getMap().getNpc1().remove();
@@ -60,5 +60,4 @@ public class GunGame extends Server {
 		if (getMap().getNpc3() != null)
 			getMap().getNpc3().remove();
 	}
-
 }
