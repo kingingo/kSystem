@@ -120,12 +120,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>dev.wolveringer</groupId>
+			<groupId>eu.epicpvp</groupId>
 			<artifactId>DatenClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>dev.wolveringer.datenserver</groupId>
+			<groupId>eu.epicpvp.datenserver</groupId>
 			<artifactId>packets</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
