@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import eu.epicpvp.kcore.Command.Admin.CommandVanish;
 import eu.epicpvp.kcore.Command.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -110,8 +111,12 @@ public class CommandMap extends kListener implements CommandExecutor {
 
 	public void updateNPCS() {
 		ranking.clear();
-		for (Player player : UtilServer.getPlayers())
-			ranking.add(new kSort<String>(player.getName(), player.getLevel()));
+		ArrayList<Player> invisible = CommandVanish.getInvisible();
+		for (Player player : UtilServer.getPlayers()) {
+			if (!invisible.contains(player)) {
+				ranking.add(new kSort<>(player.getName(), player.getLevel()));
+			}
+		}
 
 		Collections.sort(ranking, kSort.DESCENDING);
 		clear();
