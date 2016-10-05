@@ -3,7 +3,7 @@ package eu.epicpvp.kSystem;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.epicpvp.datenclient.client.ClientWrapper;
-import dev.wolveringer.client.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.ServerType;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.Creative.Creative;

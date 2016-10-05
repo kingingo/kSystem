@@ -4,26 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
-import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
-import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
-import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangedEvent;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
-import eu.epicpvp.kcore.Update.Event.UpdateEvent;
-import eu.epicpvp.kcore.Update.UpdateType;
-import eu.epicpvp.kcore.UserDataConfig.Events.UserDataConfigLoadEvent;
-import eu.epicpvp.kcore.Util.TimeSpan;
-import eu.epicpvp.kcore.Util.UtilEvent;
-import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
-import eu.epicpvp.kcore.Util.UtilPlayer;
-import eu.epicpvp.kcore.Util.UtilScoreboard;
-import eu.epicpvp.kcore.Util.UtilServer;
-import eu.epicpvp.kcore.Util.UtilWorldGuard;
-import lombok.Getter;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,6 +28,28 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
+
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
+import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangedEvent;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
+import eu.epicpvp.kcore.Update.UpdateType;
+import eu.epicpvp.kcore.Update.Event.UpdateEvent;
+import eu.epicpvp.kcore.UserDataConfig.Events.UserDataConfigLoadEvent;
+import eu.epicpvp.kcore.Util.TimeSpan;
+import eu.epicpvp.kcore.Util.UtilEvent;
+import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
+import eu.epicpvp.kcore.Util.UtilPlayer;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilWorldGuard;
+import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class GunGameListener extends kListener {
 

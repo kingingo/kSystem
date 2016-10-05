@@ -3,8 +3,9 @@ package eu.epicpvp.kSystem.Server.Creative;
 import java.util.HashMap;
 
 import com.intellectualcrafters.plot.api.PlotAPI;
-import dev.wolveringer.bukkit.permissions.GroupTyp;
+
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.permissions.GroupTyp;
 import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.Creative.Commands.CommandkPlot;

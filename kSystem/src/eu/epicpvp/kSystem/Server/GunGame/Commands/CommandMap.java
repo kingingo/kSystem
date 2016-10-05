@@ -6,22 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import eu.epicpvp.kSystem.Server.GunGame.GunGame;
-import eu.epicpvp.kSystem.Server.GunGame.rank.NPCRank;
-import eu.epicpvp.kcore.Command.Admin.CommandVanish;
-import eu.epicpvp.kcore.Command.CommandHandler;
-import eu.epicpvp.kcore.Command.CommandHandler.Sender;
-import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.Lists.kSort;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
-import eu.epicpvp.kcore.Update.Event.UpdateEvent;
-import eu.epicpvp.kcore.Update.UpdateType;
-import eu.epicpvp.kcore.Util.UtilScoreboard;
-import eu.epicpvp.kcore.Util.UtilServer;
-import eu.epicpvp.kcore.Util.UtilTime;
-import eu.epicpvp.kcore.kConfig.kConfig;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -33,6 +17,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.scoreboard.DisplaySlot;
+
+import eu.epicpvp.kSystem.Server.GunGame.GunGame;
+import eu.epicpvp.kSystem.Server.GunGame.rank.NPCRank;
+import eu.epicpvp.kcore.Command.CommandHandler;
+import eu.epicpvp.kcore.Command.CommandHandler.Sender;
+import eu.epicpvp.kcore.Command.Admin.CommandVanish;
+import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Lists.kSort;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
+import eu.epicpvp.kcore.Update.UpdateType;
+import eu.epicpvp.kcore.Update.Event.UpdateEvent;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilTime;
+import eu.epicpvp.kcore.kConfig.kConfig;
+import lombok.Getter;
+import lombok.Setter;
 
 public class CommandMap extends kListener implements CommandExecutor {
 	@Getter

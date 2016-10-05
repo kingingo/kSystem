@@ -1,13 +1,16 @@
 package eu.epicpvp.kSystem.Server.GunGame;
 
-import dev.wolveringer.bukkit.permissions.GroupTyp;
+import org.bukkit.Location;
+import org.bukkit.WorldCreator;
+
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.ServerType;
+import eu.epicpvp.datenserver.definitions.permissions.GroupTyp;
+import eu.epicpvp.kSystem.kServerSystem;
+import eu.epicpvp.kSystem.Server.Server;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandGunGame;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandKit;
 import eu.epicpvp.kSystem.Server.GunGame.Commands.CommandMap;
-import eu.epicpvp.kSystem.Server.Server;
-import eu.epicpvp.kSystem.kServerSystem;
 import eu.epicpvp.kcore.AACHack.AACHack;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Command.Commands.CommandStats;
@@ -17,8 +20,6 @@ import eu.epicpvp.kcore.StatsManager.StatsManagerRepository;
 import eu.epicpvp.kcore.Util.UtilWorld;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Location;
-import org.bukkit.WorldCreator;
 
 public class GunGame extends Server {
 
