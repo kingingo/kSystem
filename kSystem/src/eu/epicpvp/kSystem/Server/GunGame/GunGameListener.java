@@ -239,16 +239,21 @@ public class GunGameListener extends kListener {
 	@EventHandler
 	public void setboard(PlayerSetScoreboardEvent ev) {
 		UtilScoreboard.addBoard(ev.getPlayer().getScoreboard(), DisplaySlot.SIDEBAR, UtilScoreboard.getScoreboardDisplayname() + " - GUNGAME");
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "    ", DisplaySlot.SIDEBAR, 11);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aKills:", DisplaySlot.SIDEBAR, 10);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f" + getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.KILLS) + " ", DisplaySlot.SIDEBAR, 9);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "   ", DisplaySlot.SIDEBAR, 8);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aDeaths:", DisplaySlot.SIDEBAR, 7);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f" + getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.DEATHS), DisplaySlot.SIDEBAR, 6);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "  ", DisplaySlot.SIDEBAR, 5);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aHöchstes Level:", DisplaySlot.SIDEBAR, 4);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f" + getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.LEVEL) + "  ", DisplaySlot.SIDEBAR, 3);
-		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), " ", DisplaySlot.SIDEBAR, 2);
+		int i = 14;
+		i++;
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "    ", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§bTeaming / Farming verboten.", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§bSpawncamping ab Level 15 verboten.", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§0", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aKills:", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f" + getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.KILLS) + " ", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "   ", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aDeaths:", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f" + getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.DEATHS), DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "  ", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§aHöchstes Level:", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), "§f" + getInstance().getStatsManager().getInt(ev.getPlayer(), StatsKey.LEVEL) + "  ", DisplaySlot.SIDEBAR, --i);
+		UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), " ", DisplaySlot.SIDEBAR, --i);
 		UtilScoreboard.addLiveBoard(ev.getPlayer().getScoreboard(), ChatColor.RED + "" + ChatColor.BOLD + "§¤");
 		getInstance().getKit().setLevel(ev.getPlayer(), ev.getPlayer().getLevel());
 	}
