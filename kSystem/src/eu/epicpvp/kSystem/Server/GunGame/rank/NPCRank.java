@@ -45,7 +45,7 @@ public class NPCRank {
 		}
 
 		if (nametag == null) {
-			nametag = new NameTagMessage(NameTagType.PACKET, location.clone().add(0, 2.3, 0), new String[]{"§c§lPlatz " + rank});
+			nametag = new NameTagMessage(NameTagType.PACKET, location.clone().add(0, 2.3, 0), "§c§lPlatz " + rank);
 		}
 		nametag.send();
 
@@ -55,7 +55,7 @@ public class NPCRank {
 		} else {
 			LoadedPlayer lplayer = UtilServer.getClient().getPlayerAndLoad(player.getName());
 			npc.setHelmet(UtilItem.Head(player.getName()));
-			npc.setCustomName("§e§l" + lplayer.getNickname() + " §7|§7 Lvl. §a" + player.getLevel());
+			npc.setCustomName("§e§l" + lplayer.getFinalName() + " §7|§7 Lvl. §a" + player.getLevel());
 		}
 	}
 
