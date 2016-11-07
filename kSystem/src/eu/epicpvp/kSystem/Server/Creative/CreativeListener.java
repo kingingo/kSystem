@@ -1,25 +1,40 @@
 package eu.epicpvp.kSystem.Server.Creative;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Util.RestartScheduler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 public class CreativeListener extends kListener{
 
 	private Creative instance;
-	
+
 	public CreativeListener(Creative instance) {
 		super(instance.getInstance(), "CreativeListener");
 		this.instance=instance;
@@ -32,22 +47,80 @@ public class CreativeListener extends kListener{
 		ev.setLine(2, ev.getLine(2).replaceAll("&", "§"));
 		ev.setLine(3, ev.getLine(3).replaceAll("&", "§"));
 	}
-	
-//	@EventHandler
-//	public void book(PlayerEditBookEvent ev){
-//		
-//	}
-	
+
+	@EventHandler
+	public void book(PlayerEditBookEvent ev){
+		BookMeta bookMeta = ev.getNewBookMeta();
+		if (bookMeta.getPageCount() > 200 && ev.getPreviousBookMeta().getPageCount() <= 200) {
+			ev.setCancelled(true);
+		}
+		bookMeta.setAuthor(ChatColor.stripColor(bookMeta.getAuthor()).replace("§", ""));
+		List<String> pages = bookMeta.getPages();
+		for (int i = 0; i < pages.size(); i++) {
+			pages.set(i, ChatColor.stripColor(pages.get(i)).replace("§", ""));
+		}
+		bookMeta.setPages(pages);
+		bookMeta.setTitle(ChatColor.stripColor(bookMeta.getTitle()).replace("§", ""));
+		List<String> lore = bookMeta.getLore();
+		for (int i = 0; i < lore.size(); i++) {
+			lore.set(i, ChatColor.stripColor(lore.get(i)).replace("§", ""));
+		}
+		bookMeta.setLore(lore);
+		ev.setNewBookMeta(bookMeta);
+	}
+
 	@EventHandler
 	public void PlayerItemConsume(PlayerItemConsumeEvent ev){
 		ev.setCancelled(true);
 	}
-	
+
 	@EventHandler
 	public void splash(PotionSplashEvent ev){
 		ev.setCancelled(true);
 	}
-	
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onCreativeInventory(InventoryCreativeEvent event) {
+		event.setCancelled(false);
+
+		ItemStack cursor = event.getCursor();
+		ItemStack item = checkAndEditItem(cursor);
+		event.setCursor(item);
+	}
+
+	@SuppressWarnings({"SetReplaceableByEnumSet", "unchecked"})
+	public ItemStack checkAndEditItem(ItemStack item) {
+		if (item.getType() == Material.ANVIL) {
+			MaterialData data = item.getData();
+			byte dataVal = data.getData();
+			if (dataVal < 0 || dataVal > 2) {
+				data.setData((byte) 2);
+				item.setData(data);
+			}
+		}
+		ItemMeta meta = item.getItemMeta();
+		new HashSet<>(meta.getItemFlags()).forEach(meta::removeItemFlags);
+		new HashMap<>(meta.getEnchants()).forEach((enchantment, integer) -> {
+			if (integer > 5 || integer < 0) {
+				meta.removeEnchant(enchantment);
+			}
+		});
+		item.setItemMeta(meta);
+		if (item instanceof CraftItemStack) {
+			CraftItemStack citem = (CraftItemStack) item;
+			try {
+				net.minecraft.server.v1_8_R3.ItemStack handle = (net.minecraft.server.v1_8_R3.ItemStack) CraftItemStack.class.getDeclaredField("handle").get(citem);
+				NBTTagCompound nbt = handle.getTag();
+				if (nbt != null) {
+					nbt.remove("AttributeModifiers");
+				}
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
+			}
+		}
+		return item;
+	}
+
 	@EventHandler
 	public void Command(PlayerCommandPreprocessEvent ev){
 		String cmd = "";
@@ -57,7 +130,7 @@ public class CreativeListener extends kListener{
 	    }else{
 	      cmd = ev.getMessage();
 	    }
-	    
+
 	    if(cmd.startsWith("/me")){
 			ev.setCancelled(true);
 			return;
@@ -74,14 +147,14 @@ public class CreativeListener extends kListener{
 	    		|| cmd.equalsIgnoreCase("/ps")
 	    		|| cmd.equalsIgnoreCase("/p2")
 	    		|| cmd.equalsIgnoreCase("/2")){
-				
+
 	    	instance.getCreativeInventoryHandler().open(ev.getPlayer());
 	    	ev.setCancelled(true);
 	    	return;
 		}else if(cmd.equalsIgnoreCase("/kp")){
 			ev.setMessage(ev.getMessage().replaceAll("/kp", "/p"));
 		}
-	     
+
 		if(ev.getPlayer().isOp()){
 			if(cmd.equalsIgnoreCase("/reload")){
 				ev.setCancelled(true);
@@ -95,32 +168,42 @@ public class CreativeListener extends kListener{
 			}
 		}
 	}
-	
-	@EventHandler
-	public void inv(InventoryCreativeEvent ev){
-		ev.setCancelled(false);
-	}
-	
+
 	public void restart(){
 		RestartScheduler restart = new RestartScheduler(instance.getInstance());
 		restart.setMoney(UtilServer.getGemsShop().getGems());
 		restart.setStats(instance.getMoney());
 		restart.start();
 	}
-	
+
 	@EventHandler
 	public void respawn(PlayerRespawnEvent ev){
 		ev.setRespawnLocation(Bukkit.getWorld("plotworld").getSpawnLocation());
 	}
-	
+
 	@EventHandler
 	public void quit(PlayerQuitEvent ev){
 		ev.setQuitMessage(null);
 	}
-	
+
 	@EventHandler
-	public void join(PlayerJoinEvent ev){
-		ev.setJoinMessage(null);
-		UtilPlayer.setTab(ev.getPlayer(), "Creative-Server");
+	public void join(PlayerJoinEvent event){
+		event.setJoinMessage(null);
+		Player player = event.getPlayer();
+		UtilPlayer.setTab(player, "Creative-Server");
+		checkAndEditPlayerInv(player);
+		Bukkit.getScheduler().runTaskLater(instance.getInstance(), player::updateInventory, 1);
+	}
+
+	public void checkAndEditPlayerInv(Player player) {PlayerInventory inv = player.getInventory();
+		for (int i = 0; i < inv.getSize(); i++) {
+			ItemStack item = inv.getItem(i);
+			item = checkAndEditItem(item);
+			inv.setItem(i, item);
+		}
+		inv.setBoots(checkAndEditItem(inv.getBoots()));
+		inv.setLeggings(checkAndEditItem(inv.getLeggings()));
+		inv.setChestplate(checkAndEditItem(inv.getChestplate()));
+		inv.setHelmet(checkAndEditItem(inv.getHelmet()));
 	}
 }

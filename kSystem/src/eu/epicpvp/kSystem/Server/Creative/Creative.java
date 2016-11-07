@@ -65,6 +65,7 @@ import eu.epicpvp.kcore.Particle.WingShop;
 import eu.epicpvp.kcore.TimeManager.TimeManager;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 
 public class Creative extends Server{
 
@@ -131,7 +132,13 @@ public class Creative extends Server{
 		getCommandHandler().register(CommandSpawn.class, new CommandSpawn(UtilServer.getTeleportManager()));
 
 		this.wing = new WingShop(instance);
-		new CreativeListener(this);
+		CreativeListener creativeListener = new CreativeListener(this);
+		instance.getServer().getScheduler().runTaskTimer(instance, () -> {
+			for (Player player : instance.getServer().getOnlinePlayers()) {
+				creativeListener.checkAndEditPlayerInv(player);
+				player.updateInventory();
+			}
+		}, 60 * 20, 60 * 20);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);
 		new PlotSquarePrepare();
 		new AddonSun(instance);
