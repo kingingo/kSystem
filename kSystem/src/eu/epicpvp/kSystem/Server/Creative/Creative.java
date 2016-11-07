@@ -135,10 +135,12 @@ public class Creative extends Server{
 		CreativeListener creativeListener = new CreativeListener(this);
 		instance.getServer().getScheduler().runTaskTimer(instance, () -> {
 			for (Player player : instance.getServer().getOnlinePlayers()) {
-				creativeListener.checkAndEditPlayerInv(player);
-				player.updateInventory();
+				if (!player.isOp()) {
+					creativeListener.checkAndEditPlayerInv(player);
+					player.updateInventory();
+				}
 			}
-		}, 60 * 20, 60 * 20);
+		}, 20 * 20, 20 * 20);
 		this.creativeInventoryHandler=new CreativeInventoryHandler(this);
 		new PlotSquarePrepare();
 		new AddonSun(instance);

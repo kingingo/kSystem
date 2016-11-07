@@ -1,8 +1,11 @@
 package eu.epicpvp.kSystem.Server.Creative;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Util.RestartScheduler;
@@ -13,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,23 +29,24 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
-public class CreativeListener extends kListener{
+public class CreativeListener extends kListener {
 
 	private Creative instance;
 
 	public CreativeListener(Creative instance) {
 		super(instance.getInstance(), "CreativeListener");
-		this.instance=instance;
+		this.instance = instance;
 	}
 
 	@EventHandler
-	public void Sign(SignChangeEvent ev){
+	public void Sign(SignChangeEvent ev) {
 		ev.setLine(0, ev.getLine(0).replaceAll("&", "§"));
 		ev.setLine(1, ev.getLine(1).replaceAll("&", "§"));
 		ev.setLine(2, ev.getLine(2).replaceAll("&", "§"));
@@ -49,7 +54,7 @@ public class CreativeListener extends kListener{
 	}
 
 	@EventHandler
-	public void book(PlayerEditBookEvent ev){
+	public void book(PlayerEditBookEvent ev) {
 		BookMeta bookMeta = ev.getNewBookMeta();
 		if (bookMeta.getPageCount() > 200 && ev.getPreviousBookMeta().getPageCount() <= 200) {
 			ev.setCancelled(true);
@@ -70,49 +75,89 @@ public class CreativeListener extends kListener{
 	}
 
 	@EventHandler
-	public void PlayerItemConsume(PlayerItemConsumeEvent ev){
+	public void PlayerItemConsume(PlayerItemConsumeEvent ev) {
 		ev.setCancelled(true);
 	}
 
 	@EventHandler
-	public void splash(PotionSplashEvent ev){
+	public void splash(PotionSplashEvent ev) {
 		ev.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCreativeInventory(InventoryCreativeEvent event) {
 		event.setCancelled(false);
 
-		ItemStack cursor = event.getCursor();
-		ItemStack item = checkAndEditItem(cursor);
-		event.setCursor(item);
+		Player player = (Player) event.getWhoClicked();
+		if (player.isOp()) {
+			return;
+		}
+		event.setCursor(checkAndEditItem(event.getCursor(), player));
+		event.setCurrentItem(checkAndEditItem(event.getCurrentItem(), player));
+		checkAndEditPlayerInv(player);
 	}
 
 	@SuppressWarnings({"SetReplaceableByEnumSet", "unchecked"})
-	public ItemStack checkAndEditItem(ItemStack item) {
+	public ItemStack checkAndEditItem(ItemStack item, Player player) {
+		if (item == null) {
+			return null;
+		}
 		if (item.getType() == Material.ANVIL) {
 			MaterialData data = item.getData();
 			byte dataVal = data.getData();
 			if (dataVal < 0 || dataVal > 2) {
 				data.setData((byte) 2);
 				item.setData(data);
+				item.setDurability((short) 2);
+				System.out.println("Removed invalid anvil data in inv of player " + player.getName() + " item: " + item);
 			}
 		}
 		ItemMeta meta = item.getItemMeta();
-		new HashSet<>(meta.getItemFlags()).forEach(meta::removeItemFlags);
-		new HashMap<>(meta.getEnchants()).forEach((enchantment, integer) -> {
-			if (integer > 5 || integer < 0) {
-				meta.removeEnchant(enchantment);
+		if (meta != null) {
+			String displayName = meta.getDisplayName();
+			if (displayName != null) {
+				if (displayName.length() > 60) {
+					displayName = displayName.substring(0, 60);
+				}
+				meta.setDisplayName(ChatColor.stripColor(displayName).replace("§", ""));
 			}
-		});
-		item.setItemMeta(meta);
+			List<String> lore = meta.getLore();
+			if (lore != null) {
+				for (int i = 0; i < lore.size(); i++) {
+					String line = lore.get(i);
+					if (line.length() > 60) {
+						line = line.substring(0, 60);
+					}
+					lore.set(i, ChatColor.stripColor(line).replace("§", ""));
+				}
+			}
+			Set<ItemFlag> itemFlags = meta.getItemFlags();
+			if (itemFlags != null) {
+				new HashSet<>(itemFlags).forEach(meta::removeItemFlags);
+			}
+			Map<Enchantment, Integer> enchants = meta.getEnchants();
+			if (enchants != null) {
+				new HashMap<>(enchants).forEach((enchantment, lvl) -> {
+					if (lvl > 5 || lvl < 0) {
+						meta.removeEnchant(enchantment);
+						System.out.println("Removed invalid enchantment " + enchantment + ":" + lvl + " in inv of player " + player.getName() + " item: " + item);
+					}
+				});
+			}
+			item.setItemMeta(meta);
+		}
 		if (item instanceof CraftItemStack) {
 			CraftItemStack citem = (CraftItemStack) item;
 			try {
-				net.minecraft.server.v1_8_R3.ItemStack handle = (net.minecraft.server.v1_8_R3.ItemStack) CraftItemStack.class.getDeclaredField("handle").get(citem);
-				NBTTagCompound nbt = handle.getTag();
-				if (nbt != null) {
-					nbt.remove("AttributeModifiers");
+				Field handleField = CraftItemStack.class.getDeclaredField("handle");
+				handleField.setAccessible(true);
+				net.minecraft.server.v1_8_R3.ItemStack handle = (net.minecraft.server.v1_8_R3.ItemStack) handleField.get(citem);
+				if (handle != null) {
+					NBTTagCompound nbt = handle.getTag();
+					if (nbt != null) {
+						nbt.remove("AttributeModifiers");
+						System.out.println("Removed AttributeModifiers NBT from " + item + " found in inv of player " + player.getName());
+					}
 				}
 			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
@@ -122,54 +167,54 @@ public class CreativeListener extends kListener{
 	}
 
 	@EventHandler
-	public void Command(PlayerCommandPreprocessEvent ev){
+	public void Command(PlayerCommandPreprocessEvent ev) {
 		String cmd = "";
-	    if (ev.getMessage().contains(" ")){
-	      String[] parts = ev.getMessage().split(" ");
-	      cmd = parts[0];
-	    }else{
-	      cmd = ev.getMessage();
-	    }
+		if (ev.getMessage().contains(" ")) {
+			String[] parts = ev.getMessage().split(" ");
+			cmd = parts[0];
+		} else {
+			cmd = ev.getMessage();
+		}
 
-	    if(cmd.startsWith("/me")){
+		if (cmd.startsWith("/me")) {
 			ev.setCancelled(true);
 			return;
-		}else if(cmd.startsWith("/bukkit")){
+		} else if (cmd.startsWith("/bukkit")) {
 			ev.setCancelled(true);
 			return;
-		} else if(cmd.equalsIgnoreCase("/minecraft:")){
-	    	ev.setCancelled(true);
-	    	return;
-	    }else if(cmd.equalsIgnoreCase("/p")
-	    		|| cmd.equalsIgnoreCase("/plot")
-	    		|| cmd.equalsIgnoreCase("/plots")
-	    		|| cmd.equalsIgnoreCase("/plotsquared")
-	    		|| cmd.equalsIgnoreCase("/ps")
-	    		|| cmd.equalsIgnoreCase("/p2")
-	    		|| cmd.equalsIgnoreCase("/2")){
+		} else if (cmd.equalsIgnoreCase("/minecraft:")) {
+			ev.setCancelled(true);
+			return;
+		} else if (cmd.equalsIgnoreCase("/p")
+				|| cmd.equalsIgnoreCase("/plot")
+				|| cmd.equalsIgnoreCase("/plots")
+				|| cmd.equalsIgnoreCase("/plotsquared")
+				|| cmd.equalsIgnoreCase("/ps")
+				|| cmd.equalsIgnoreCase("/p2")
+				|| cmd.equalsIgnoreCase("/2")) {
 
-	    	instance.getCreativeInventoryHandler().open(ev.getPlayer());
-	    	ev.setCancelled(true);
-	    	return;
-		}else if(cmd.equalsIgnoreCase("/kp")){
+			instance.getCreativeInventoryHandler().open(ev.getPlayer());
+			ev.setCancelled(true);
+			return;
+		} else if (cmd.equalsIgnoreCase("/kp")) {
 			ev.setMessage(ev.getMessage().replaceAll("/kp", "/p"));
 		}
 
-		if(ev.getPlayer().isOp()){
-			if(cmd.equalsIgnoreCase("/reload")){
+		if (ev.getPlayer().isOp()) {
+			if (cmd.equalsIgnoreCase("/reload")) {
 				ev.setCancelled(true);
 				restart();
-			}else if(cmd.equalsIgnoreCase("/restart")){
+			} else if (cmd.equalsIgnoreCase("/restart")) {
 				ev.setCancelled(true);
 				restart();
-			}else if(cmd.equalsIgnoreCase("/stop")){
+			} else if (cmd.equalsIgnoreCase("/stop")) {
 				ev.setCancelled(true);
 				restart();
 			}
 		}
 	}
 
-	public void restart(){
+	public void restart() {
 		RestartScheduler restart = new RestartScheduler(instance.getInstance());
 		restart.setMoney(UtilServer.getGemsShop().getGems());
 		restart.setStats(instance.getMoney());
@@ -177,33 +222,36 @@ public class CreativeListener extends kListener{
 	}
 
 	@EventHandler
-	public void respawn(PlayerRespawnEvent ev){
+	public void respawn(PlayerRespawnEvent ev) {
 		ev.setRespawnLocation(Bukkit.getWorld("plotworld").getSpawnLocation());
 	}
 
 	@EventHandler
-	public void quit(PlayerQuitEvent ev){
+	public void quit(PlayerQuitEvent ev) {
 		ev.setQuitMessage(null);
 	}
 
 	@EventHandler
-	public void join(PlayerJoinEvent event){
+	public void join(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 		Player player = event.getPlayer();
 		UtilPlayer.setTab(player, "Creative-Server");
-		checkAndEditPlayerInv(player);
-		Bukkit.getScheduler().runTaskLater(instance.getInstance(), player::updateInventory, 1);
+		if (!player.isOp()) {
+			checkAndEditPlayerInv(player);
+			Bukkit.getScheduler().runTaskLater(instance.getInstance(), player::updateInventory, 1);
+		}
 	}
 
-	public void checkAndEditPlayerInv(Player player) {PlayerInventory inv = player.getInventory();
+	public void checkAndEditPlayerInv(Player player) {
+		PlayerInventory inv = player.getInventory();
 		for (int i = 0; i < inv.getSize(); i++) {
 			ItemStack item = inv.getItem(i);
-			item = checkAndEditItem(item);
+			item = checkAndEditItem(item, player);
 			inv.setItem(i, item);
 		}
-		inv.setBoots(checkAndEditItem(inv.getBoots()));
-		inv.setLeggings(checkAndEditItem(inv.getLeggings()));
-		inv.setChestplate(checkAndEditItem(inv.getChestplate()));
-		inv.setHelmet(checkAndEditItem(inv.getHelmet()));
+		inv.setBoots(checkAndEditItem(inv.getBoots(), player));
+		inv.setLeggings(checkAndEditItem(inv.getLeggings(), player));
+		inv.setChestplate(checkAndEditItem(inv.getChestplate(), player));
+		inv.setHelmet(checkAndEditItem(inv.getHelmet(), player));
 	}
 }
