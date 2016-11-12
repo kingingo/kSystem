@@ -17,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,6 +26,9 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -95,6 +99,31 @@ public class CreativeListener extends kListener {
 		event.setCursor(checkAndEditItem(event.getCursor(), player));
 		event.setCurrentItem(checkAndEditItem(event.getCurrentItem(), player));
 		checkAndEditPlayerInv(player);
+	}
+
+	@EventHandler
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if (event.getRightClicked().getType() == EntityType.ARMOR_STAND) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+		if (event.getRightClicked().getType() == EntityType.ARMOR_STAND) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.getPlayer().isOp()) {
+			return;
+		}
+		ItemStack item = event.getItem();
+		if (item != null && item.getType() == Material.ARMOR_STAND) {
+			event.setCancelled(true);
+		}
 	}
 
 	@SuppressWarnings({"SetReplaceableByEnumSet", "unchecked"})
